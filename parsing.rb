@@ -10,6 +10,32 @@ url = "Rogers_Hornsby"
 
 wikitext = File.open('tmp.txt', 'r') { |f| f.read }
 
+def clean_text(t)
+  result = t.gsub(/(\{\{([^\{\}]+)\}\})/) do |x|
+    handle_template($2)
+  end.
+    gsub(/(\{\{([^\{\}]+)\}\})/x, "").
+    gsub(/<ref[^\/]+\/>/, "").
+    gsub(/<ref\b[^>]*>(.*?)<\/ref>/, "").
+    gsub("&nbsp;", " ").
+    gsub("($ today)", "").
+    gsub(/\[\[([^\]]+)\]\]/) do |x|
+    $1.split("|").last
+  end.
+    # dump everything after see-also section
+    split("==See also==").first.
+
+    # remove lines with any extra square brackets
+    split("\n").collect do |x|
+    if x.match(/^\[\[/) || x.match(/\]\]$/)
+      nil
+    else
+      x
+    end
+  end.compact.join("\n")
+end
+
+
 def handle_template(x)
   params = x.split("|")
   case params.first
@@ -85,35 +111,6 @@ require 'pp'
 pp sections.keys.inspect
 
 sections.each do |k, text|
-  puts text
+  puts clean_text(text)
 end
 exit
-
-
-
-result = wikitext.gsub(/(\{\{([^\{\}]+)\}\})/) do |x|
-  handle_template($2)
-end.
-  gsub(/(\{\{([^\{\}]+)\}\})/x, "").
-  gsub(/<ref[^\/]+\/>/, "").
-  gsub(/<ref\b[^>]*>(.*?)<\/ref>/, "").
-  gsub("&nbsp;", " ").
-  gsub("($ today)", "").
-  gsub(/\[\[([^\]]+)\]\]/) do |x|
-   $1.split("|").last
-end.
-  # dump everything after see-also section
-  split("==See also==").first.
-
-  # remove lines with any extra square brackets
-  split("\n").collect do |x|
-  if x.match(/^\[\[/) || x.match(/\]\]$/)
-    nil
-  else
-    x
-  end
-end.compact.join("\n")
-puts "====================================================="
-puts "====================================================="
-puts "====================================================="
-puts result
