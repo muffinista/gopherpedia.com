@@ -37,16 +37,31 @@ see_also = ""
 in_body = false
 in_special = false
 current_section = "Introduction"
-
+in_table = false
 wikitext.each_line do |line|
   line.chomp!
 
   # skip move commands
-  next if line.match(/\{\{pp-move/)
+  next if line.match(/\^{\{pp-move/) ||
+
+    # skip s- commands
+    line.match(/^\{\{s\-/) ||
+
+    # skip translations/other languages
+    line.match(/^\[\[[a-z]{2}\:/)
+
 
   puts "#{current_section} #{in_special} #{in_body} #{line}"
 
-  if in_special
+  if in_table
+    if line.match(/\|\}$/)
+      in_table = false
+      next
+    end
+  elsif line.match(/^\{\|/)
+    in_table = true
+    next
+  elsif in_special
     if line.match(/^\}\}$/)
       in_special = false
       in_body = true
@@ -68,6 +83,10 @@ end
 
 require 'pp'
 pp sections.keys.inspect
+
+sections.each do |k, text|
+  puts text
+end
 exit
 
 
