@@ -5,6 +5,7 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     eventmachine (0.12.10)
+    filecache (1.0)
     gopher2000 (0.2.0)
       eventmachine
       logger
@@ -22,5 +23,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  filecache
   gopher2000
   mediawiki-gateway

@@ -24,6 +24,8 @@ class ArticleSection
 	result = t.gsub(/(\{\{([^\{\}]+)\}\})/) do |x|
 	  handle_template($2)
 	end.
+	  gsub("'''", "").
+	  gsub("''", "'").
 	  gsub(/(\{\{([^\{\}]+)\}\})/x, "").
 	  gsub(/<ref[^\/]+\/>/, "").
 	  gsub(/<ref\b[^>]*>(.*?)<\/ref>/, "").
@@ -33,7 +35,7 @@ class ArticleSection
 	  $1.split("|").last
 	end.
 	  # dump everything after see-also section
-	  split("==See also==").first.
+	  #split("==See also==").first.
 
 	  # remove lines with any extra square brackets
 	  split("\n").collect do |x|
@@ -117,6 +119,8 @@ class Parser
 	  elsif line.match(/^\{\|/)
 		in_table = true
 		next
+	  elsif line.match(/^\[\[File\:/)
+		next
 	  elsif in_special
 
 		# track the special info that is at the top of an entry, we might use it
@@ -150,21 +154,4 @@ class Parser
 
 	w
   end
-
-end
-
-
-#require "media_wiki"
-#mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
-#url = "Rogers_Hornsby"
-#wikitext = mw.get(url)
-
-wikitext = File.open('tmp.txt', 'r') { |f| f.read }
-
-p = Parser.new
-a = p.parse(wikitext)
-
-a.sections.each do |k, section|
-  puts "*** #{section.title} (#{section.level}) ***"
-  puts section
 end
