@@ -124,7 +124,6 @@ class Parser
 	  elsif in_special
 
 		# track the special info that is at the top of an entry, we might use it
-		# =>
 		if line.match(/^\}\}$/)
 		  in_special = false
 		  in_body = true
