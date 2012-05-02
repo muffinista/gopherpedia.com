@@ -40,12 +40,12 @@ class Fetcher
 	@cache = FileCache.new("gopherpedia", "/tmp", 0, 2)
 	@mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php',
 	  :bot => false,
-	  :loglevel => Logger::DEBUG,
+	  #:loglevel => Logger::DEBUG,
 	  :limit => 50)
   end
 
-  def search(key)
-	@mw.search(key)
+  def search(key, offset = nil)
+	@mw.search(key, nil, 25, offset)
   end
 
   def get(key, exp = 3600)
@@ -59,22 +59,22 @@ class Fetcher
 end
 
 
-#url = "Rogers_Hornsby"
-#wikitext = mw.get(url)
+# #url = "Rogers_Hornsby"
+# #wikitext = mw.get(url)
 
-#wikitext = File.open('tmp.txt', 'r') { |f| f.read }
-f = Fetcher.new
-total, titles = f.search("Baseball")
-puts total
-puts titles
-exit
+# #wikitext = File.open('tmp.txt', 'r') { |f| f.read }
+# f = Fetcher.new
+# total, titles = f.search("Baseball")
+# puts total
+# puts titles
+# exit
 
-wikitext = f.get("Rogers_Hornsby")
+# wikitext = f.get("Rogers_Hornsby")
 
-p = Parser.new
-a = p.parse(wikitext)
+# p = Parser.new
+# a = p.parse(wikitext)
 
-a.sections.each do |k, section|
-  puts "*** #{section.title} (#{section.level}) ***"
-  puts section
-end
+# a.sections.each do |k, section|
+#   puts "*** #{section.title} (#{section.level}) ***"
+#   puts section
+# end

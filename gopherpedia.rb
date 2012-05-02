@@ -3,6 +3,8 @@
 require "rubygems"
 require "bundler/setup"
 
+require './fetcher'
+
 require 'gopher2000'
 
 set :host, '0.0.0.0'
@@ -43,20 +45,31 @@ end
 route '/lookup' do
   key = request.input.strip
 
-  render :search, key
+  f = Fetcher.new
+  total, results = f.search(key)
+
+  render :search, key, total, results
+end
+
+route '/get/:title' do
+  render :article, params[:title]
 end
 
 #
 # output the results of a search request
 #
-menu :search do |key|
+menu :search do |key, total, results|
   br
   text "** RESULTS FOR #{key} **"
   br
-#  f.days.each do |day|
-#    block "#{day.title}: #{day.text}", 70
-#    br
-#  end
+  results.each do |x|
+	link x, "/get/#{x}"
+  end
   br
   text "** Powered by Gopher 2000 **"
+end
+
+
+menu :article do |title|
+  text "load #{title}"
 end
