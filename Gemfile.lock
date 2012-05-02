@@ -1,7 +1,7 @@
 PATH
   remote: /home/colin/Projects/gopher2000
   specs:
-    gopher2000 (0.2.3)
+    gopher2000 (0.3.0)
       eventmachine
       logging
 
