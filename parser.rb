@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+require "sanitize"
+
 class ArticleSection
   attr_accessor :level
   attr_accessor :title
@@ -16,9 +18,13 @@ class ArticleSection
 	self.content << x
   end
 
-  def to_s
-	clean_text(content)
+  def output
+	@output ||= Sanitize.clean(clean_text(content)).lstrip.rstrip
   end
+
+#  def to_s
+#	clean_text(content)
+#  end
 
   def clean_text(t)
 	result = t.gsub(/(\{\{([^\{\}]+)\}\})/) do |x|
@@ -26,9 +32,14 @@ class ArticleSection
 	end.
 	  gsub("'''", "").
 	  gsub("''", "'").
+	  gsub(/<!--[\s\S]*?-->/, "").
 	  gsub(/(\{\{([^\{\}]+)\}\})/x, "").
-	  gsub(/<ref[^\/]+\/>/, "").
-	  gsub(/<ref\b[^>]*>(.*?)<\/ref>/, "").
+	  gsub(/<ref[^\/]+\/>/i, "").
+	  gsub(/<ref\b[^>]*>(.*?)<\/ref>/i, "").
+
+	  # run a ref strip again to catch multi-line refs
+	  gsub(/<ref\b[^>]*>/i, "").
+	  gsub(/<\/ref>/i, "").
 	  gsub("&nbsp;", " ").
 	  gsub("($ today)", "").
 	  gsub(/\[\[([^\]]+)\]\]/) do |x|
@@ -86,7 +97,25 @@ end
 
 class Parser
 
+  #
+  # strip some HTML out that we want to remove completely -- mostly
+  # ref tags
+  #
+  def strip_html(text)
+	doc = Nokogiri::HTML(text)
+
+	blacklist = ['title', 'script', 'style', 'ref', 'math']
+	nodelist = doc.search('//text()')
+	blacklist.each do |tag|
+	  nodelist -= doc.search('//' + tag + '/text()')
+	end
+	nodelist.text
+  end
+
   def parse(text)
+	text = strip_html(text)
+#	puts text
+#	puts "----------------------------------------------------"
 
 	w = Article.new
 
@@ -136,7 +165,7 @@ class Parser
 		w.categories << $1
 	  elsif line.match /\=\=([^\=]+)\=\=/
 		# section switch
-		current_section = $1
+		current_section = $1.lstrip.rstrip
 		level = (line.count("=") / 2).to_i - 1
 		w.sections[current_section] ||= ArticleSection.new(current_section, level)
 	  elsif in_body == false && line.match(/^\{\{Infobox/)

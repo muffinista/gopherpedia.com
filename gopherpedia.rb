@@ -44,7 +44,6 @@ end
 
 route '/lookup' do
   key = request.input.strip
-
   f = Fetcher.new
   total, results = f.search(key)
 
@@ -52,7 +51,12 @@ route '/lookup' do
 end
 
 route '/get/:title' do
-  render :article, params[:title]
+  f = Fetcher.new
+  data = f.get(params[:title])
+  p = Parser.new
+  a = p.parse(data)
+
+  render :article, params[:title], a
 end
 
 #
@@ -70,6 +74,25 @@ menu :search do |key, total, results|
 end
 
 
-menu :article do |title|
-  text "load #{title}"
+text :article do |title, article|
+  br
+
+  big_header title
+
+  article.sections.
+	reject { |k, v|
+	v.output.length == 0 ||
+	["see also", "references", "external links"].include?(k.downcase)
+  }.each do |k, section|
+
+	if section.level < 2
+	  header section.title
+	else
+	  small_header section.title
+	end
+	block section.output
+	br(2)
+  end
+
+  br
 end
