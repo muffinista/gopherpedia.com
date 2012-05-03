@@ -107,7 +107,8 @@ class Parser
 	blacklist = ['title', 'script', 'style', 'ref', 'math']
 	nodelist = doc.search('//text()')
 	blacklist.each do |tag|
-	  nodelist -= doc.search('//' + tag + '/text()')
+	  doc.xpath("//" + tag).each { |x| x.remove }
+#	  nodelist -= doc.search('//' + tag + '/text()')
 	end
 	nodelist.text
   end
