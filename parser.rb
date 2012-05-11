@@ -45,6 +45,9 @@ class ArticleSection
       gsub(/\[\[([^\]]+)\]\]/) do |x|
       $1.split("|").last
     end.
+#      gsub("()", "").
+#      gsub(" ,", ",").
+
       # dump everything after see-also section
       #split("==See also==").first.
 
@@ -55,7 +58,8 @@ class ArticleSection
       else
         x
       end
-    end.compact.join("\n")
+    end.
+      compact.join("\n")
   end
 
   def handle_template(x)
@@ -107,16 +111,22 @@ class Parser
     blacklist = ['title', 'script', 'style', 'ref', 'math']
     nodelist = doc.search('//text()')
     blacklist.each do |tag|
-      doc.xpath("//" + tag).each { |x| x.remove }
-      #	  nodelist -= doc.search('//' + tag + '/text()')
+      doc.xpath("//" + tag).each { |x| 
+        puts x.inspect
+        x.children.each { |c| c.remove }
+
+        x.remove 
+      }
+      #nodelist -= doc.search('//' + tag + '/text()')
     end
-    nodelist.text
+    #    nodelist.text
+    doc.text
   end
 
   def parse(text)
     text = strip_html(text)
-    #	puts text
-    #	puts "----------------------------------------------------"
+    	puts text
+    	puts "----------------------------------------------------"
 
     w = Article.new
 

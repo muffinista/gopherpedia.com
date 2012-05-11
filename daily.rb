@@ -23,19 +23,19 @@ class FeaturedContent
     #feed = Feedzirra::Feed.fetch_and_parse("http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
     @feed.entries.each do |entry|
       doc = Nokogiri::HTML(entry.summary)
+
       doc.xpath("//a").each do |a|
         if a.children.first.name != "img"
           result << {
             :date => entry.published,
             :title => a.attributes["title"].value,
-            :href => a.attributes["href"].value
+            :href => a.attributes["href"].value.gsub("/wiki/", "")
           }
           break
         end
       end
     end
 
-    puts result.inspect
     result
 
   end

@@ -6,6 +6,7 @@ require "mysql2"
 require "sequel"
 
 require './fetcher'
+require './daily'
 
 # connect to an in-memory database
 DB = Sequel.connect(
@@ -43,14 +44,17 @@ route '/' do
     p[:title]
   }
 
-  render :index, pagelist
+  f = FeaturedContent.new
+  featured = f.fetch
+
+  render :index, pagelist, featured
 end
 
 
 #
 # main index for the server
 #
-menu :index do |pagelist|
+menu :index do |pagelist, featured|
 
   figlet "gopherpedia!"
   br
@@ -66,6 +70,12 @@ menu :index do |pagelist|
   # ask for some input
   text "Search gopherpedia:"
   input 'Search Gopherpedia', '/lookup'
+
+  header "Featured Content"
+  featured.reverse.each do |f|
+    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:href]}"
+  end
+  br(2)
 
   header "Recent pages"
   pagelist.each do |p|
@@ -129,7 +139,7 @@ text :article do |title, article|
   article.sections.
     reject { |k, v|
     v.output.length == 0 ||
-    ["see also", "references", "external links"].include?(k.downcase)
+    ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
   }.each do |k, section|
 
     if section.level < 2
