@@ -8,13 +8,18 @@ require "sequel"
 require './fetcher'
 require './daily'
 
+db_params = {
+  :adapter => 'mysql2',
+  :host => 'localhost',
+  :database => 'gopher',
+  :user => 'root',
+  :password => nil
+}
+host = 'localhost'
+port = 7070
+
 # connect to an in-memory database
-DB = Sequel.connect(
-                    :adapter => 'mysql2',
-                    :host => 'localhost',
-                    :database => 'gopher',
-                    :user => 'root',
-                    :password => nil)
+DB = Sequel.connect(db_params)
 
 # create an items table
 if ! DB.table_exists?(:pages)
@@ -29,8 +34,8 @@ end
 
 require 'gopher2000'
 
-set :host, '0.0.0.0'
-set :port, 7070
+set :host, host
+set :port, port
 
 # http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=onthisday&feedformat=atom
 # http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom
@@ -85,6 +90,27 @@ menu :index do |pagelist, featured|
 
   br(5)
   text "Powered by Gopher 2000, a Muffinlabs Production" 
+end
+
+route '/about' do
+  render :about
+end
+
+menu :about do
+  block "In 1991, the Gopher protocol was born -- a method of searching for and distributing information on the Internet. Gopher was intended to be easy to implement and use, and for awhile, it was very popular."
+  br
+
+  block "Of course, HTTP and the World Wide Web launched right around that time, and it wasn't long before the Web was proven to be a better platform. Gopher has survived to this day, but the WWW reigns supreme."
+  br
+
+  block "Despite its lack of popularity, Gopher is still an awesome protocol - it's extremely hackable and fun to work on. People like to put random stuff on their gopher servers -- their blog, articles they write, etc. I decided that I wanted to write an interface to the single greatest source of information on the Internet -- Wikipedia."
+  br
+
+  block "So, I built Gopherpedia. It runs on Gopher2000 (https://github.com/muffinista/gopher2000), a Ruby library I wrote for developing Gopher services. The web proxy to Gopherpedia is GoPHPer (https://github.com/muffinista/gophper-proxy), which I also wrote."
+  br
+
+  link "back to gopherpedia", "/"
+
 end
 
 
