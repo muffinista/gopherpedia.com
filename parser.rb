@@ -65,6 +65,7 @@ class ArticleSection
 
   def handle_template(x)
     params = x.split("|")
+
     case params.first
     when "By"
       return params.last
@@ -113,7 +114,6 @@ class Parser
     nodelist = doc.search('//text()')
     blacklist.each do |tag|
       doc.xpath("//" + tag).each { |x| 
-        puts x.inspect
         x.children.each { |c| c.remove }
 
         x.remove 
@@ -126,16 +126,15 @@ class Parser
 
   def parse(text)
     text = strip_html(text)
-    	puts text
-    	puts "----------------------------------------------------"
-
     w = Article.new
 
     in_body = false
-    in_special = false
+    special_level = 0
     current_section = "Introduction"
     in_table = false
-
+    
+    text = text.gsub(/\{\{'s\}\}/, "'s").gsub(/\{\{/, "\n{{\n")..gsub(/\}\}/, "}}\n")
+    
     text.each_line do |line|
       line.chomp!
 
@@ -147,8 +146,6 @@ class Parser
 
         # skip translations/other languages
         line.match(/^\[\[[a-z]{2}\:/)
-
-      #puts "#{current_section} #{in_special} #{in_body} #{line}"
 
 
       if in_table
@@ -162,12 +159,11 @@ class Parser
         next
       elsif line.match(/^\[\[File\:/)
         next
-      elsif in_special
-
+      elsif special_level > 0
         # track the special info that is at the top of an entry, we might use it
-        if line.match(/^\}\}$/)
-          in_special = false
-          in_body = true
+        if line.match(/^\}\}/)
+          special_level -= 1
+          in_body = true if special_level == 0
         else
           w.special << line << "\n"
           next
@@ -180,8 +176,9 @@ class Parser
         current_section = $1.lstrip.rstrip
         level = (line.count("=") / 2).to_i - 1
         w.sections[current_section] ||= ArticleSection.new(current_section, level)
-      elsif in_body == false && line.match(/^\{\{Infobox/)
-        in_special = true
+#      elsif in_body == false && line.match(/^\{\{Infobox/)
+      elsif in_body == false && line.match(/^\{\{/)        
+        special_level += 1
         next
       else
 
