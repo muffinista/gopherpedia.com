@@ -11,7 +11,7 @@ require './daily'
 db_params = {
   :adapter => 'mysql2',
   :host => 'localhost',
-  :database => 'gopher',
+  :database => 'gopherpedia',
   :user => 'root',
   :password => nil
 }

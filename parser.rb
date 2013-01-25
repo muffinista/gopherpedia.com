@@ -41,6 +41,7 @@ class ArticleSection
       gsub(/<ref\b[^>]*>/i, "").
       gsub(/<\/ref>/i, "").
       gsub("&nbsp;", " ").
+      gsub(/–/, "-").
       gsub("($ today)", "").
       gsub(/\[\[([^\]]+)\]\]/) do |x|
       $1.split("|").last
