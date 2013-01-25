@@ -21,16 +21,26 @@ port = 7070
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
 
-# create an items table
-if ! DB.table_exists?(:pages)
-  DB.create_table :pages do
-    primary_key :id
-    String :title
-    timestamp :viewed_at
+def file_for_key(key)
 
-    index :viewed_at
-  end
+  @depth = 4
+  @root = "/opt/wiki"
+  
+  md5 = Digest::MD5.hexdigest(key).to_s
+  dir = File.join(@root, md5.split(//)[-@depth, @depth])
+  File.join(dir, md5)
 end
+
+# # create an items table
+# if ! DB.table_exists?(:pages)
+#   DB.create_table :pages do
+#     primary_key :id
+#     String :title
+#     timestamp :viewed_at
+
+#     index :viewed_at
+#   end
+# end
 
 require 'gopher2000'
 
@@ -67,7 +77,7 @@ menu :index do |pagelist, featured|
   block "Welcome to **Gopherpedia**, the gopher interface to Wikipedia. This is a direct interface to wikipedia, you can search and read articles via the search form below. Enjoy!"
 
   br
-  link "more about gopherpedia", "/about"
+  menu "more about gopherpedia", "/about"
 
   # use br(x) to add x space between lines
   br(2)
@@ -109,7 +119,7 @@ menu :about do
   block "So, I built Gopherpedia. It runs on Gopher2000 (https://github.com/muffinista/gopher2000), a Ruby library I wrote for developing Gopher services. The web proxy to Gopherpedia is GoPHPer (https://github.com/muffinista/gophper-proxy), which I also wrote."
   br
 
-  link "back to gopherpedia", "/"
+  menu "back to gopherpedia", "/"
 
 end
 
@@ -125,15 +135,25 @@ end
 
 route '/lookup' do
   key = request.input.strip
-  f = Fetcher.new
-  total, results = f.search(key)
+
+  #results = DB[:titles].where(Sequel.like(:title, "%#{key}%"))
+  results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key)", :key => key)
+  total = results.count
+  
+  #  f = Fetcher.new
+#  total, results = f.search(key)
 
   render :search, key, total, results
 end
 
 route '/get/:title' do
-  f = Fetcher.new
-  data = f.get(params[:title])
+  file = file_for_key(params[:title])
+
+  # f = Fetcher.new
+  # data = f.get(params[:title])
+
+  data = open(file, &:read)
+  
   p = Parser.new
   a = p.parse(data)
 
@@ -150,7 +170,7 @@ menu :search do |key, total, results|
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
-    link x, "/get/#{x}"
+    link x[:title], "/get/#{x[:title]}"
   end
   br
   text "** Powered by Gopher 2000 **"

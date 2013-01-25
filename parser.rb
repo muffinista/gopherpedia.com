@@ -132,8 +132,16 @@ class Parser
     special_level = 0
     current_section = "Introduction"
     in_table = false
-    
-    text = text.gsub(/\{\{'s\}\}/, "'s").gsub(/\{\{/, "\n{{\n")..gsub(/\}\}/, "}}\n")
+
+
+    #
+    # put {{ and }} on their own line to make parsing easier
+    # and deal with {{'}} in the output
+    #
+    text = text.gsub(/''\{\{'\}\}s/, "'s''").
+      gsub(/\{\{'\}\}/, "'").
+      gsub(/\{\{/, "\n{{").
+      gsub(/\}\}/, "\n}}\n")
     
     text.each_line do |line|
       line.chomp!
@@ -147,7 +155,11 @@ class Parser
         # skip translations/other languages
         line.match(/^\[\[[a-z]{2}\:/)
 
-
+      if special_level <= 0
+        in_body = true
+        special_level = 0
+      end
+     
       if in_table
         # skip tables
         if line.match(/\|\}$/)
@@ -163,8 +175,13 @@ class Parser
         # track the special info that is at the top of an entry, we might use it
         if line.match(/^\}\}/)
           special_level -= 1
-          in_body = true if special_level == 0
-        else
+        end
+
+        if line.match(/^\{\{/)        
+          special_level += 1
+        end
+
+        if special_level > 0
           w.special << line << "\n"
           next
         end
@@ -177,10 +194,10 @@ class Parser
         level = (line.count("=") / 2).to_i - 1
         w.sections[current_section] ||= ArticleSection.new(current_section, level)
 #      elsif in_body == false && line.match(/^\{\{Infobox/)
-      elsif in_body == false && line.match(/^\{\{/)        
+      elsif line.match(/^\{\{/)        
         special_level += 1
         next
-      else
+      elsif special_level <= 0
 
         # add this line to our current section
         in_body = true
