@@ -162,8 +162,7 @@ text :article do |title, article|
 
   big_header title
 
-  article.sections.
-    reject { |k, v|
+  article.sections.reject { |k, v|
     v.output.length == 0 ||
     ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
   }.each do |k, section|
