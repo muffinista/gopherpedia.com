@@ -22,12 +22,11 @@ port = 7070
 DB = Sequel.connect(db_params)
 
 def file_for_key(key)
-
-  @depth = 4
-  @root = "/opt/wiki"
+  depth = 4
+  root = "/opt/wiki"
   
   md5 = Digest::MD5.hexdigest(key).to_s
-  dir = File.join(@root, md5.split(//)[-@depth, @depth])
+  dir = File.join(root, md5.split(//)[-depth, depth])
   File.join(dir, md5)
 end
 
