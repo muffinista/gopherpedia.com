@@ -4,6 +4,9 @@ require "bundler/setup"
 require "filecache"
 require "feedzirra"
 
+# http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=onthisday&feedformat=atom
+# http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom
+
 class FeaturedContent
   def initialize
     @cache = FileCache.new("gopherpedia", "/tmp", 3600, 2)
@@ -20,7 +23,6 @@ class FeaturedContent
 
     result = []
 
-    #feed = Feedzirra::Feed.fetch_and_parse("http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
     @feed.entries.each do |entry|
       doc = Nokogiri::HTML(entry.summary)
 
@@ -41,5 +43,5 @@ class FeaturedContent
   end
 end
 
-f = FeaturedContent.new
-f.fetch
+#f = FeaturedContent.new
+#f.fetch

@@ -1,5 +1,21 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
+
+# grep -v -E '^Help:|MediaWiki:|Portal:|Template:|Wikipedia:|File:|Category:' /tmp/titles > /tmp/shorter-titles
+
+# cat shorter-titles | sed "s/'/''/g" | sed "s/.*/'&'/" > titles-load
+# 10266  grep ":" /tmp/titles |  awk '{split($0,a,":"); print a[1]}' | sort | uniq -c | sort -n
+
+ #    596 Help
+ #   1648 MediaWiki
+ #   3361 Book
+ # 106542 Portal
+ # 385378 Template
+ # 657283 Wikipedia
+ # 818681 File
+ # 949431 Category
+
+
 require "rubygems"
 require "bundler/setup"
 require "mysql2"
@@ -15,6 +31,15 @@ db_params = {
   :user => 'root',
   :password => nil
 }
+
+db_params = {
+  :adapter => 'mysql2',
+  :host => 'mysql.muffinlabs.com',
+  :database => 'gopherpedia',
+  :user => 'gopherpedia',
+  :password => 'g0ferp3dlia'
+}
+
 host = 'localhost'
 port = 7070
 
@@ -23,31 +48,17 @@ DB = Sequel.connect(db_params)
 
 def file_for_key(key)
   depth = 4
-  root = "/opt/wiki"
+  root = "/home/mitchc2/gopherpedia-data"
   
   md5 = Digest::MD5.hexdigest(key).to_s
   dir = File.join(root, md5.split(//)[-depth, depth])
   File.join(dir, md5)
 end
 
-# # create an items table
-# if ! DB.table_exists?(:pages)
-#   DB.create_table :pages do
-#     primary_key :id
-#     String :title
-#     timestamp :viewed_at
-
-#     index :viewed_at
-#   end
-# end
-
 require 'gopher2000'
 
 set :host, host
 set :port, port
-
-# http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=onthisday&feedformat=atom
-# http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom
 
 #
 # main route
@@ -58,6 +69,7 @@ route '/' do
     p[:title]
   }
 
+  # pull featured content
   f = FeaturedContent.new
   featured = f.fetch
 
