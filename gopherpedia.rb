@@ -40,8 +40,8 @@ db_params = {
   :password => 'g0ferp3dlia'
 }
 
-host = 'localhost'
-port = 7070
+host = 'gopherpedia.com'
+port = 70
 
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
@@ -57,6 +57,7 @@ end
 
 require 'gopher2000'
 
+set :non_blocking, false
 set :host, host
 set :port, port
 
@@ -145,10 +146,11 @@ end
 #  location = request.input.strip
 
 route '/lookup' do
+  puts request.inspect
   key = request.input.strip
 
   #results = DB[:titles].where(Sequel.like(:title, "%#{key}%"))
-  results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key)", :key => key)
+  results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key) ORDER BY score DESC LIMIT 100", :key => key)
   total = results.count
   
   #  f = Fetcher.new
