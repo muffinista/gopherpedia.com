@@ -31,24 +31,27 @@ db_params = {
   :user => 'root',
   :password => nil
 }
+host = 'localhost'
+port = 7070
 
-db_params = {
-  :adapter => 'mysql2',
-  :host => 'mysql.muffinlabs.com',
-  :database => 'gopherpedia',
-  :user => 'gopherpedia',
-  :password => 'g0ferp3dlia'
-}
+# db_params = {
+#   :adapter => 'mysql2',
+#   :host => 'mysql.muffinlabs.com',
+#   :database => 'gopherpedia',
+#   :user => 'gopherpedia',
+#   :password => 'g0ferp3dlia'
+# }
 
-host = 'gopherpedia.com'
-port = 70
+# host = 'gopherpedia.com'
+# port = 70
 
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
 
 def file_for_key(key)
   depth = 4
-  root = "/home/mitchc2/gopherpedia-data"
+  #root = "/home/mitchc2/gopherpedia-data"
+  root = "/opt/wiki"
   
   md5 = Digest::MD5.hexdigest(key).to_s
   dir = File.join(root, md5.split(//)[-depth, depth])
@@ -57,7 +60,7 @@ end
 
 require 'gopher2000'
 
-set :non_blocking, false
+#set :non_blocking, false
 set :host, host
 set :port, port
 
@@ -199,7 +202,6 @@ text :article do |title, article|
     v.output.length == 0 ||
     ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
   }.each do |k, section|
-
     if section.level < 2
       header section.title
     else

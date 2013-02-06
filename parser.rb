@@ -65,14 +65,17 @@ class ArticleSection
 
   def handle_template(x)
     params = x.split("|")
-
     case params.first
+    when "sup"
+      return "(#{params.last})"
     when "By"
       return params.last
     when "Inflation"
       return params[2]
     when "Birth date"
       ""
+    when "sortname"
+      params[1..-1].join(" ")
     else
       return ""
     end
@@ -124,6 +127,71 @@ class Parser
     doc.text
   end
 
+  def handle_tables(text)
+#    puts text
+#    puts "=================="
+
+    results = []
+    in_caption = false
+    in_row = false
+    orig = ""
+    
+    current = []
+    
+    text.each_line do |line|     
+      line.chomp!
+      orig = line.dup
+
+      tmp = line.split(/\|/)
+      line = tmp.reject { |v|
+        v =~ /scope=/ || v=~ /scope|style|class=/ || v =~ /background-color:/
+      }.join("|")
+
+      if line =~ /^\|\+/
+        if ! current.empty?
+          results << current.join("\t")
+          current = []
+        end
+
+        in_caption = true
+        current << line.gsub(/\|\+/, '')
+      elsif line =~ /^\!/ && in_caption
+        if ! current.empty?
+          results << current.join("\t")
+          current = []
+        end
+        in_caption = false
+        in_row = true
+
+        line = line.gsub(/^\| \|/, "").gsub(/^\| /, "").gsub(/^\! /, "")
+        current << line
+      elsif line =~ /^\|\-/
+        if ! current.empty?
+          results << current.join("\t")
+          current = []
+        end
+
+        in_caption = false
+        in_row = true
+        # new row
+      else
+        line = line.gsub(/^\| \|/, "").gsub(/^\| /, "").gsub(/^\! /, "")
+        current << line
+      end
+    end
+
+    if ! current.empty?
+      results << current.join("\t")
+      current = []
+    end
+
+    results.collect do |l|
+      " #{l}"
+    end.join("\n")
+    
+#    results.join("\n")
+  end
+  
   def parse(text)
     text = strip_html(text)
     w = Article.new
@@ -133,19 +201,23 @@ class Parser
     current_section = "Introduction"
     in_table = false
 
+#    text = text.gsub(/\{\|(^|})\|\}/m) do |x|
+#    text = text.gsub(/\{\|(.+)\|\}/m) do |x|
+    text = text.gsub(/\{\|(.+?)\|\}/m) do |x|
+      handle_tables($1)
+    end
 
     #
     # put {{ and }} on their own line to make parsing easier
     # and deal with {{'}} in the output
     #
-    text = text.gsub(/''\{\{'\}\}s/, "'s''").
-      gsub(/\{\{'\}\}/, "'").
-      gsub(/\{\{/, "\n{{").
-      gsub(/\}\}/, "\n}}\n")
-    
+    # text = text.gsub(/''\{\{'\}\}s/, "'s''").
+    #   gsub(/\{\{'\}\}/, "'").
+    #   gsub(/\{\{/, "\n{{").
+    #   gsub(/\}\}/, "\n}}\n")
+
     text.each_line do |line|
       line.chomp!
-
       # skip move commands
       next if line.match(/\^{\{pp-move/) ||
 
@@ -160,16 +232,7 @@ class Parser
         special_level = 0
       end
      
-      if in_table
-        # skip tables
-        if line.match(/\|\}$/)
-          in_table = false
-          next
-        end
-      elsif line.match(/^\{\|/)
-        in_table = true
-        next
-      elsif line.match(/^\[\[File\:/)
+      if line.match(/^\[\[File\:/)
         next
       elsif special_level > 0
         # track the special info that is at the top of an entry, we might use it
@@ -208,4 +271,27 @@ class Parser
 
     w
   end
+end
+
+
+require "media_wiki"
+mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
+url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
+#wikitext = mw.get(url)
+#File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
+
+wikitext = File.open('tmp.txt', 'r') { |f| f.read }
+
+
+p = Parser.new
+article = p.parse(wikitext)
+
+article.sections.reject { |k, v|
+  v.output.length == 0 ||
+  ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
+}.each do |k, section|
+  puts section.title
+#  puts section.content
+  puts section.output
+  puts "\n\n"
 end
