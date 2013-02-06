@@ -208,15 +208,53 @@ class Parser
     end
 
     #
-    # put {{ and }} on their own line to make parsing easier
+    # put {{ and }} on their own line to make parsing out special info easier
     # and deal with {{'}} in the output
     #
-    # text = text.gsub(/''\{\{'\}\}s/, "'s''").
-    #   gsub(/\{\{'\}\}/, "'").
-    #   gsub(/\{\{/, "\n{{").
-    #   gsub(/\}\}/, "\n}}\n")
+    text = text.gsub(/''\{\{'\}\}s/, "'s''").
+      gsub(/\{\{'\}\}/, "'").
+      gsub(/\{\{/, "\n{{").
+      gsub(/\}\}/, "\n}}\n")
 
+
+    non_special = []
+
+    #
+    # pull out special section
+    #
     text.each_line do |line|
+      line.chomp!
+
+      if special_level > 0
+        # track the special info that is at the top of an entry, we might use it
+        if line.match(/^\}\}/)
+          special_level -= 1
+        end
+
+        if line.match(/^\{\{/)        
+          special_level += 1
+        end
+
+        if special_level > 0
+          w.special << line << "\n"
+          next
+        end
+
+        next
+      elsif line.match(/^\{\{/)
+        special_level += 1
+        next
+      end     
+
+      if special_level <= 0
+        non_special << line
+      end
+    end
+
+    text = non_special.join("\n").gsub(/\n\{\{/,"{{").gsub(/\}\}\n/, "}}")
+    
+    text.each_line do |line|
+#    non_special.each do |line|
       line.chomp!
       # skip move commands
       next if line.match(/\^{\{pp-move/) ||
@@ -261,7 +299,6 @@ class Parser
         special_level += 1
         next
       elsif special_level <= 0
-
         # add this line to our current section
         in_body = true
         w.sections[current_section] ||= ArticleSection.new(current_section)
@@ -274,24 +311,24 @@ class Parser
 end
 
 
-require "media_wiki"
-mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
-url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
-#wikitext = mw.get(url)
-#File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
+# require "media_wiki"
+# mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
+# url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
+# #wikitext = mw.get(url)
+# #File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
 
-wikitext = File.open('tmp.txt', 'r') { |f| f.read }
+# wikitext = File.open('tmp.txt', 'r') { |f| f.read }
 
 
-p = Parser.new
-article = p.parse(wikitext)
+# p = Parser.new
+# article = p.parse(wikitext)
 
-article.sections.reject { |k, v|
-  v.output.length == 0 ||
-  ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
-}.each do |k, section|
-  puts section.title
-#  puts section.content
-  puts section.output
-  puts "\n\n"
-end
+# article.sections.reject { |k, v|
+#   v.output.length == 0 ||
+#   ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
+# }.each do |k, section|
+#   puts section.title
+# #  puts section.content
+#   puts section.output
+#   puts "\n\n"
+# end
