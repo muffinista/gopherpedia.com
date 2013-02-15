@@ -75,7 +75,7 @@ class ArticleSection
     when "Birth date"
       ""
     when "sortname"
-      params[1..-1].join(" ")
+      params[1..-2].join(" ")
     else
       return ""
     end
@@ -216,7 +216,7 @@ class Parser
       gsub(/\{\{/, "\n{{").
       gsub(/\}\}/, "\n}}\n")
 
-
+    
     non_special = []
 
     #
@@ -241,7 +241,8 @@ class Parser
         end
 
         next
-      elsif line.match(/^\{\{/)
+#      elsif line.match(/^\{\{/)
+      elsif line.match(/^\{\{Use/) || line.match(/^\{\{Infobox/)
         special_level += 1
         next
       end     
@@ -251,11 +252,19 @@ class Parser
       end
     end
 
-    text = non_special.join("\n").gsub(/\n\{\{/,"{{").gsub(/\}\}\n/, "}}")
+#    text = non_special.join("\n").gsub(/\n\{\{/,"{{").gsub(/\n\}\}/, "}}")
+    text = non_special.join("\n").
+      gsub(/\n\{\{/, "{{").
+      gsub(/\n\}\}\n/, "}}")
+
+#    puts text
+#    exit
     
     text.each_line do |line|
 #    non_special.each do |line|
       line.chomp!
+      in_body = true
+
       # skip move commands
       next if line.match(/\^{\{pp-move/) ||
 
@@ -264,28 +273,9 @@ class Parser
 
         # skip translations/other languages
         line.match(/^\[\[[a-z]{2}\:/)
-
-      if special_level <= 0
-        in_body = true
-        special_level = 0
-      end
      
       if line.match(/^\[\[File\:/)
         next
-      elsif special_level > 0
-        # track the special info that is at the top of an entry, we might use it
-        if line.match(/^\}\}/)
-          special_level -= 1
-        end
-
-        if line.match(/^\{\{/)        
-          special_level += 1
-        end
-
-        if special_level > 0
-          w.special << line << "\n"
-          next
-        end
       elsif line.match /\[\[Category\:([^\]]+)\]\]/
         # store categories on their own
         w.categories << $1
@@ -294,13 +284,8 @@ class Parser
         current_section = $1.lstrip.rstrip
         level = (line.count("=") / 2).to_i - 1
         w.sections[current_section] ||= ArticleSection.new(current_section, level)
-#      elsif in_body == false && line.match(/^\{\{Infobox/)
-      elsif line.match(/^\{\{/)        
-        special_level += 1
-        next
-      elsif special_level <= 0
+      else
         # add this line to our current section
-        in_body = true
         w.sections[current_section] ||= ArticleSection.new(current_section)
         w.sections[current_section] << line << "\n"
       end
