@@ -103,7 +103,7 @@ menu :index do |pagelist, featured|
 
   header "Featured Content"
   featured.reverse.each do |f|
-    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:href]}"
+    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:title]}"
   end
   br(2)
 
@@ -122,7 +122,7 @@ route '/about' do
 end
 
 menu :about do
-  block "In 1991, the Gopher protocol was born -- a method of searching for and distributing information on the Internet. Gopher was intended to be easy to implement and use, and for awhile, it was very popular."
+  block "In 1991, the Gopher protocol was born -- a method of searching for and distributing information on the Internet. Gopher was intended to be easy to implement and use, and for a little while, it was very popular."
   br
 
   block "Of course, HTTP and the World Wide Web launched right around that time, and it wasn't long before the Web was proven to be a better platform. Gopher has survived to this day, but the WWW reigns supreme."

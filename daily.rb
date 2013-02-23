@@ -13,8 +13,8 @@ class FeaturedContent
     @key = "featured.atom"
   end
 
-  def fetch
-    @feed = @cache.get(@key)
+  def fetch(force=false)
+    @feed = @cache.get(@key) unless force
     unless @feed
       puts "feed not cached, fetch"
       @feed = Feedzirra::Feed.fetch_and_parse("http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
@@ -43,5 +43,7 @@ class FeaturedContent
   end
 end
 
-#f = FeaturedContent.new
-#f.fetch
+if __FILE__ == $0
+  f = FeaturedContent.new
+  puts f.fetch(true)
+end
