@@ -24,26 +24,31 @@ require "sequel"
 require './fetcher'
 require './daily'
 
-db_params = {
-  :adapter => 'mysql2',
-  :host => 'localhost',
-  :database => 'gopherpedia',
-  :user => 'root',
-  :password => nil
-}
-host = 'localhost'
-port = 7070
+hostname = `uname -n`.chomp.sub(/\..*/,'')
+puts "greetings from #{hostname}"
 
-# db_params = {
-#   :adapter => 'mysql2',
-#   :host => 'mysql.muffinlabs.com',
-#   :database => 'gopherpedia',
-#   :user => 'gopherpedia',
-#   :password => 'g0ferp3dlia'
-# }
+if hostname == "cylon"
+  db_params = {
+    :adapter => 'mysql2',
+    :host => 'localhost',
+    :database => 'gopherpedia',
+    :user => 'root',
+    :password => nil
+  }
+  host = 'localhost'
+  port = 7070
+else
+  db_params = {
+    :adapter => 'mysql2',
+    :host => 'mysql.muffinlabs.com',
+    :database => 'gopherpedia',
+    :user => 'gopherpedia',
+    :password => 'g0ferp3dlia'
+  }
 
-# host = 'gopherpedia.com'
-# port = 70
+  host = 'gopherpedia.com'
+  port = 70
+end
 
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
@@ -63,22 +68,6 @@ require 'gopher2000'
 #set :non_blocking, false
 set :host, host
 set :port, port
-
-#
-# main route
-#
-route '/' do
-  # generate a list of recent page requests
-  pagelist = DB[:pages].distinct.select(:title).order(:viewed_at.desc).limit(20).collect { |p|
-    p[:title]
-  }
-
-  # pull featured content
-  f = FeaturedContent.new
-  featured = f.fetch
-
-  render :index, pagelist, featured
-end
 
 
 #
@@ -103,13 +92,15 @@ menu :index do |pagelist, featured|
 
   header "Featured Content"
   featured.reverse.each do |f|
-    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:title]}"
+#    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:title]}"
+    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
   end
   br(2)
 
   header "Recent pages"
   pagelist.each do |p|
-    link p, "/get/#{p}"
+#    link p, "/get/#{p}"
+    link p, "/#{p}"    
   end
   br
 
@@ -149,34 +140,56 @@ end
 #  location = request.input.strip
 
 route '/lookup' do
-  puts request.inspect
   key = request.input.strip
 
-  #results = DB[:titles].where(Sequel.like(:title, "%#{key}%"))
   results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key) ORDER BY score DESC LIMIT 100", :key => key)
-  total = results.count
-  
-  #  f = Fetcher.new
-#  total, results = f.search(key)
 
+  total = results.count
   render :search, key, total, results
 end
 
-route '/get/:title' do
-  file = file_for_key(params[:title])
+#
+# main route
+#
+route '/:title?' do
+  if params[:title]
+    file = file_for_key(params[:title])
 
-  # f = Fetcher.new
-  # data = f.get(params[:title])
-
-  data = open(file, &:read)
+    data = open(file, &:read)
   
-  p = Parser.new
-  a = p.parse(data)
+    p = Parser.new
+    a = p.parse(data)
 
-  DB[:pages].insert(:title => params[:title])
+    DB[:pages].insert(:title => params[:title])
 
-  render :article, params[:title], a
+    render :article, params[:title], a
+  else
+   
+    # generate a list of recent page requests
+    pagelist = DB[:pages].distinct.select(:title).order(:viewed_at.desc).limit(20).collect { |p|
+      p[:title]
+    }
+
+    # pull featured content
+    f = FeaturedContent.new
+    featured = f.fetch
+    
+    render :index, pagelist, featured
+  end
 end
+
+# route '/get/:title' do
+#   file = file_for_key(params[:title])
+
+#   data = open(file, &:read)
+  
+#   p = Parser.new
+#   a = p.parse(data)
+
+#   DB[:pages].insert(:title => params[:title])
+
+#   render :article, params[:title], a
+# end
 
 #
 # output the results of a search request
@@ -186,7 +199,8 @@ menu :search do |key, total, results|
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
-    link x[:title], "/get/#{x[:title]}"
+#    link x[:title], "/get/#{x[:title]}"
+    link x[:title], "/#{x[:title]}"    
   end
   br
   text "** Powered by Gopher 2000 **"
