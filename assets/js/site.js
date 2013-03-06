@@ -190,7 +190,11 @@ $(document).ready(function() {
    * Handle existing URI on the browser's URL -- we'll only do this if the intro is hidden, 
    * and there's something to load. We'll add the 'hide' class to the output in home.html to trigger this.
    */
-  if ( window.location.pathname != "/" && $("#intro").hasClass("hide") ) {
-    loadGopherUri(unescape(window.location.pathname));
-  }
+    if ( window.location.pathname != "/" && $("#intro").hasClass("hide") ) {
+        loadGopherUri(unescape(window.location.pathname));
+    }
+    else if ( $("#gopher").html() !== "" ) {
+        $("#gopher").fromGopher();
+    }
+
 });

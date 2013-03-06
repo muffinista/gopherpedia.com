@@ -24,10 +24,10 @@ require "sequel"
 require './fetcher'
 require './daily'
 
-hostname = `uname -n`.chomp.sub(/\..*/,'')
-puts "greetings from #{hostname}"
+@hostname = `uname -n`.chomp.sub(/\..*/,'')
+puts "greetings from #{@hostname}"
 
-if hostname == "cylon"
+if @hostname == "cylon"
   db_params = {
     :adapter => 'mysql2',
     :host => 'localhost',
@@ -55,8 +55,8 @@ DB = Sequel.connect(db_params)
 
 def file_for_key(key)
   depth = 4
-  #root = "/home/mitchc2/gopherpedia-data"
   root = "/opt/wiki"
+  #: "/home/mitchc2/gopherpedia-data"
   
   md5 = Digest::MD5.hexdigest(key).to_s
   dir = File.join(root, md5.split(//)[-depth, depth])
@@ -178,19 +178,6 @@ route '/:title?' do
   end
 end
 
-# route '/get/:title' do
-#   file = file_for_key(params[:title])
-
-#   data = open(file, &:read)
-  
-#   p = Parser.new
-#   a = p.parse(data)
-
-#   DB[:pages].insert(:title => params[:title])
-
-#   render :article, params[:title], a
-# end
-
 #
 # output the results of a search request
 #
@@ -212,9 +199,11 @@ text :article do |title, article|
 
   big_header title
 
+
+#||
+#    ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)  
   article.sections.reject { |k, v|
-    v.output.length == 0 ||
-    ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
+    v.output.length == 0 
   }.each do |k, section|
     if section.level < 2
       header section.title
