@@ -76,10 +76,13 @@ class ArticleSection
       ""
     when "sortname"
       params[1..-2].join(" ")
+    when "convert"
+      params[1, 2].join(" ")
     else
       return ""
     end
 
+    #{{convert|40|km|mi|sp=uk}}    
     #   **{{Birth date|1896|4|27}}**
     # **{{death date and age|1963|1|5|1896|4|27}}**
     # **{{By|1915}}**
@@ -140,6 +143,7 @@ class Parser
     
     text.each_line do |line|     
       line.chomp!
+
       orig = line.dup
 
       tmp = line.split(/\|/)
@@ -147,6 +151,7 @@ class Parser
         v =~ /scope=/ || v=~ /scope|style|class=/ || v =~ /background-color:/
       }.join("|")
 
+     
       if line =~ /^\|\+/
         if ! current.empty?
           results << current.join("\t")
@@ -174,9 +179,11 @@ class Parser
         in_caption = false
         in_row = true
         # new row
+      elsif line =~ /'''/
+        results << line.gsub(/'''/, "**")
       else
-        line = line.gsub(/^\| \|/, "").gsub(/^\| /, "").gsub(/^\! /, "")
-        current << line
+        line = line.gsub(/\|\|/, "\t").gsub(/^\| \|/, "").gsub(/^\| /, "").gsub(/^\! /, "")
+        current << line unless line.strip == ""
       end
     end
 
@@ -296,24 +303,25 @@ class Parser
 end
 
 
-# require "media_wiki"
-# mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
-# url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
-# #wikitext = mw.get(url)
-# #File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
+require "media_wiki"
+mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
+#url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
+url = "Marathon"
+wikitext = mw.get(url)
+File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
 
-# wikitext = File.open('tmp.txt', 'r') { |f| f.read }
+wikitext = File.open('tmp.txt', 'r') { |f| f.read }
 
 
-# p = Parser.new
-# article = p.parse(wikitext)
+p = Parser.new
+article = p.parse(wikitext)
 
-# article.sections.reject { |k, v|
-#   v.output.length == 0 ||
-#   ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
-# }.each do |k, section|
-#   puts section.title
-# #  puts section.content
-#   puts section.output
-#   puts "\n\n"
-# end
+article.sections.reject { |k, v|
+  v.output.length == 0 ||
+  ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
+}.each do |k, section|
+  puts section.title
+#  puts section.content
+  puts section.output
+  puts "\n\n"
+end
