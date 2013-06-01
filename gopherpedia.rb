@@ -24,34 +24,34 @@ require "sequel"
 require './fetcher'
 require './daily'
 
-db_params = {
-  :adapter => 'mysql2',
-  :host => 'localhost',
-  :database => 'gopherpedia',
-  :user => 'root',
-  :password => nil
-}
-host = 'localhost'
-port = 7070
-
 # db_params = {
 #   :adapter => 'mysql2',
-#   :host => 'mysql.muffinlabs.com',
+#   :host => 'localhost',
 #   :database => 'gopherpedia',
-#   :user => 'gopherpedia',
-#   :password => 'g0ferp3dlia'
+#   :user => 'root',
+#   :password => nil
 # }
+# host = 'localhost'
+# port = 7070
 
-# host = 'gopherpedia.com'
-# port = 70
+db_params = {
+  :adapter => 'mysql2',
+  :host => 'mysql.muffinlabs.com',
+  :database => 'gopherpedia',
+  :user => 'gopherpedia',
+  :password => 'g0ferp3dlia'
+}
+
+host = 'gopherpedia.com'
+port = 70
 
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
 
 def file_for_key(key)
   depth = 4
-  #root = "/home/mitchc2/gopherpedia-data"
-  root = "/opt/wiki"
+  root = "/home/mitchc2/gopherpedia-data"
+  #root = "/opt/wiki"
   
   md5 = Digest::MD5.hexdigest(key).to_s
   dir = File.join(root, md5.split(//)[-depth, depth])
