@@ -78,9 +78,7 @@ function loadGopher($url, $input) {
 
   error_log("$url $input");
   $x = new GopherGetter($url, $input);
-  if ( $x->isValid() ) {
-    $x->get();
-
+  if ( $x->isValid() && $x->get() ) {
     // send binary files and large text back as an attachment
     if ( $x->isBinary() || $x->size() > 1000000 ) {
       $result['url'] = "/file?name=" . basename($url) . "&path=" . $x->urlFor();
@@ -97,7 +95,7 @@ function loadGopher($url, $input) {
   }
   else {
     $result['url'] = $url;
-    $result['data'] = "3Sorry, there was a problem with your request\t\tNULL\t70";
+    $result['data'] = "3Sorry, there was a problem with your request.\t\tNULL\t70";
   }
 
   return $result;
