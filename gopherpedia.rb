@@ -55,8 +55,7 @@ DB = Sequel.connect(db_params)
 
 def file_for_key(key)
   depth = 4
-  root = "/opt/wiki"
-  #: "/home/mitchc2/gopherpedia-data"
+  root = "/home/mitchc2/gopherpedia-data"
   
   md5 = Digest::MD5.hexdigest(key).to_s
   dir = File.join(root, md5.split(//)[-depth, depth])
