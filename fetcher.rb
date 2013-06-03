@@ -3,7 +3,7 @@ require "rubygems"
 require "bundler/setup"
 require "filecache"
 
-require "./parser"
+require "parser"
 require "media_wiki"
 
 class MediaWiki::Gateway

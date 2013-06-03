@@ -146,11 +146,11 @@ class Parser
 
       orig = line.dup
 
-      tmp = line.split(/\|/)
+      tmp = line.gsub("! {{rh}} ", "").split(/\|/)
+      
       line = tmp.reject { |v|
         v =~ /scope=/ || v=~ /scope|style|class=/ || v =~ /background-color:/
       }.join("|")
-
      
       if line =~ /^\|\+/
         if ! current.empty?
@@ -191,7 +191,7 @@ class Parser
       results << current.join("\t")
       current = []
     end
-
+    
     results.collect do |l|
       " #{l}"
     end.join("\n")
@@ -218,7 +218,9 @@ class Parser
     # put {{ and }} on their own line to make parsing out special info easier
     # and deal with {{'}} in the output
     #
-    text = text.gsub(/''\{\{'\}\}s/, "'s''").
+    text = text.
+      gsub("{{Yes}}", "Yes").
+      gsub(/''\{\{'\}\}s/, "'s''").
       gsub(/\{\{'\}\}/, "'").
       gsub(/\{\{/, "\n{{").
       gsub(/\}\}/, "\n}}\n")
@@ -303,25 +305,28 @@ class Parser
 end
 
 
-require "media_wiki"
-mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
-#url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
-url = "Marathon"
-wikitext = mw.get(url)
-File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
+if __FILE__ == $0
+  require "media_wiki"
+  mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
+  #url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
+  #url = "Marathon"
+  url = "Gopher_(protocol)"
+  wikitext = mw.get(url)
+  File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
 
-wikitext = File.open('tmp.txt', 'r') { |f| f.read }
+  wikitext = File.open('tmp.txt', 'r') { |f| f.read }
 
+  
+  p = Parser.new
+  article = p.parse(wikitext)
 
-p = Parser.new
-article = p.parse(wikitext)
-
-article.sections.reject { |k, v|
-  v.output.length == 0 ||
-  ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
-}.each do |k, section|
-  puts section.title
-#  puts section.content
-  puts section.output
-  puts "\n\n"
+  article.sections.reject { |k, v|
+    v.output.length == 0 ||
+    ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
+  }.each do |k, section|
+    puts section.title
+    #  puts section.content
+    puts section.output
+    puts "\n\n"
+  end
 end

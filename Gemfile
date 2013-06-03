@@ -11,5 +11,6 @@ gem "nokogiri"
 gem "sequel"
 gem "mysql2"
 
+gem "daemons"
 
 gem "feedzirra", "~> 0.1.2"

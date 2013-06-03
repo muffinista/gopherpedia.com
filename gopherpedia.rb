@@ -15,14 +15,15 @@
  # 818681 File
  # 949431 Category
 
+$: << File.dirname(__FILE__) unless $:.include? File.dirname(__FILE__)
 
 require "rubygems"
 require "bundler/setup"
 require "mysql2"
 require "sequel"
 
-require './fetcher'
-require './daily'
+require 'fetcher'
+require 'daily'
 
 @hostname = `uname -n`.chomp.sub(/\..*/,'')
 puts "greetings from #{@hostname}"
