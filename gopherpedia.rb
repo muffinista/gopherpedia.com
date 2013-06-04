@@ -68,7 +68,7 @@ require 'gopher2000'
 #set :non_blocking, false
 set :host, host
 set :port, port
-
+set :access_log, "/tmp/gopher.log"
 
 #
 # main index for the server
