@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/muffinista/gopher2000.git
-  revision: 45ca3b7bc9931f70f533b9f240c7b4cad6103959
+  revision: d81533f05bacbdca0e2bcc22f9bbfba3164a382b
   specs:
-    gopher2000 (0.4.0)
+    gopher2000 (0.5.0)
       artii (>= 2.0.1)
       eventmachine (= 1.0.0)
       logging
