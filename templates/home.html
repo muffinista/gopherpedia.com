@@ -33,12 +33,13 @@ if ( ! array_key_exists('result', $this->data) && ! array_key_exists('file', $th
           <div class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="/">Home</a></li>
-              <li><a href="/about">About</a></li>
+              <li><a href="/gopherpedia.com/about">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
           
-	        <form class="gopher-uri form-inline">
-	          <input type="text" name="uri" class="span4" style="margin-top:5px" placeholder="URL" />
+	        <form class="form-inline search gopher-uri" method="post" action="/gopherpedia.com/lookup">
+	          <input type="text" name="text" class="span4"
+	          style="margin-top:5px" placeholder="Search Gopherpedia" />
 	          <button type="submit" class="btn">go</button>
 	        </form>
         </div>

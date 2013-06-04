@@ -176,12 +176,14 @@ $(document).ready(function() {
     return false;
   });
 
-
   /**
    * handle URI form submission
    */
-  $("form.gopher-uri").on("submit", function() {
-    loadGopherUri($(this).find("input[name=uri]").val());
+  $("form.search").on("submit", function() {
+    loadGopherUri({
+      url : $(this).attr("action"),
+      input : $(this).find("input").val()
+    });
     return false;
   });
 
