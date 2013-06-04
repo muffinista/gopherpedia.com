@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+$: << File.dirname(__FILE__) unless $:.include? File.dirname(__FILE__)
+
 require "sanitize"
 
 class ArticleSection
@@ -39,7 +41,7 @@ class ArticleSection
 
       # run a ref strip again to catch multi-line refs
       gsub(/<ref\b[^>]*>/i, "").
-      gsub(/<\/ref>/i, "").
+      sub(/<\/ref>/i, "").
       gsub("&nbsp;", " ").
       gsub(/–/, "-").
       gsub("($ today)", "").
@@ -114,13 +116,16 @@ class Parser
   # ref tags
   #
   def strip_html(text)
+    return text
     doc = Nokogiri::HTML(text)
 
     blacklist = ['title', 'script', 'style', 'ref', 'math']
     nodelist = doc.search('//text()')
     blacklist.each do |tag|
       doc.xpath("//" + tag).each { |x| 
-        x.children.each { |c| c.remove }
+        x.children.each { |c|
+          c.remove
+        }
 
         x.remove 
       }
@@ -305,12 +310,14 @@ class Parser
 end
 
 
+
 if __FILE__ == $0
   require "media_wiki"
   mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php')
   #url = "List_of_baseball_players_who_went_directly_to_Major_League_Baseball"
   #url = "Marathon"
-  url = "Gopher_(protocol)"
+  #url = "Gopher_(protocol)"
+  url = "The_Rite_of_Spring"
   wikitext = mw.get(url)
   File.open('tmp.txt', 'w') {|f| f.write(wikitext) }
 
@@ -319,7 +326,7 @@ if __FILE__ == $0
   
   p = Parser.new
   article = p.parse(wikitext)
-
+puts article.sections.keys.inspect
   article.sections.reject { |k, v|
     v.output.length == 0 ||
     ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
