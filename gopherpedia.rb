@@ -113,6 +113,9 @@ route '/about' do
 end
 
 menu :about do
+  figlet "Gopher!"
+  br
+  
   block "In 1991, the Gopher protocol was born -- a method of searching for and distributing information on the Internet. Gopher was intended to be easy to implement and use, and for a little while, it was very popular."
   br
 
@@ -125,8 +128,12 @@ menu :about do
   block "So, I built Gopherpedia. It runs on Gopher2000 (https://github.com/muffinista/gopher2000), a Ruby library I wrote for developing Gopher services. The web proxy to Gopherpedia is GoPHPer (https://github.com/muffinista/gophper-proxy), which I also wrote."
   br
 
-  menu "back to gopherpedia", "/"
+  link "more about the Gopher protocol", "Gopher (protocol)"
+  http "gopher2000 - a ruby gopher server", "http://github.com/muffinista/gopher2000"
+  http "gophper-proxy - a modern PHP gopher proxy", "http://github.com/muffinista/gophper-proxy"
 
+  br
+  menu "back to gopherpedia", "/"
 end
 
 
@@ -199,11 +206,10 @@ text :article do |title, article|
 
   big_header title
 
-
 #||
 #    ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)  
   article.sections.reject { |k, v|
-    v.output.length == 0 
+    v.output.length == 0 || v.output.gsub("*", "").strip.length == 0
   }.each do |k, section|
     if section.level < 2
       header section.title

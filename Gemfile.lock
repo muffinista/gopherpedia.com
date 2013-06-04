@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/muffinista/gopher2000.git
-  revision: d81533f05bacbdca0e2bcc22f9bbfba3164a382b
+  revision: 741ea7c2304099c4f1f1899da5a71fb2811a274e
   specs:
     gopher2000 (0.5.0)
       artii (>= 2.0.1)
@@ -10,10 +10,10 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.1.10)
-      multi_json (>= 1.0, < 1.3)
+    activesupport (3.1.12)
+      multi_json (~> 1.0)
     artii (2.0.3)
-    builder (3.1.4)
+    builder (3.2.2)
     curb (0.7.18)
     daemons (1.1.9)
     eventmachine (1.0.0)
@@ -28,22 +28,23 @@ GEM
       rdoc (~> 3.8)
       sax-machine (~> 0.1.0)
     filecache (1.0)
-    i18n (0.6.1)
-    json (1.7.6)
+    i18n (0.6.4)
+    json (1.8.0)
     little-plugger (1.1.3)
-    logging (1.7.2)
+    logging (1.8.1)
       little-plugger (>= 1.1.3)
+      multi_json (>= 1.3.6)
     loofah (1.2.1)
       nokogiri (>= 1.4.4)
     mediawiki-gateway (0.5.1)
       activesupport
       rest-client (>= 1.3.0)
-    mime-types (1.19)
-    multi_json (1.2.0)
+    mime-types (1.23)
+    multi_json (1.7.6)
     mysql2 (0.3.11)
-    nokogiri (1.5.6)
-    rake (10.0.3)
-    rdoc (3.12)
+    nokogiri (1.5.9)
+    rake (10.0.4)
+    rdoc (3.12.2)
       json (~> 1.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -51,7 +52,7 @@ GEM
       nokogiri (>= 1.4.4, < 1.6)
     sax-machine (0.1.0)
       nokogiri (> 0.0.0)
-    sequel (3.43.0)
+    sequel (3.48.0)
 
 PLATFORMS
   ruby

@@ -26,7 +26,6 @@ else {
 
   define('START_REQUEST', 'gopherpedia.com/');
   define('START_INPUT', '');
-
 }
 
 define('CACHE_LIFETIME', 3600);
