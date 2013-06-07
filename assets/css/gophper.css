@@ -9,9 +9,6 @@
     font-style: normal;
 }
 
-body {
-  padding-top: 50px; /* 50px to make the container go all the way to the bottom of the topbar */
-}
 
 #gopher {
   font-family: DroidSansMonoRegular, monospace;

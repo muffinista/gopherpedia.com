@@ -33,34 +33,34 @@ $(document).ready(function() {
     };
 
 
-    /**
-     * output a breadcrumb which will just split the current URI and
-     * link to each level
-     */
-    var updateBreadcrumb = function(url) {
-        var bc = unescape(url).split("/");
-        var crumb = "";
-        var li;
+  /**
+   * output a breadcrumb which will just split the current URI and
+   * link to each level
+   */
+  var updateBreadcrumb = function(url) {
+    var bc = unescape(url).split("/");
+    var crumb = "";
+    var li;
 
-        $("#breadcrumb").html("<ul class='breadcrumb' />");
+    $("#breadcrumb").html("<ul class='breadcrumbs' />");
 
-        for ( var i = 0; i < bc.length; i++ ) {
-            crumb = crumb + bc[i] + "/";
+    for ( var i = 0; i < bc.length; i++ ) {
+      crumb = crumb + bc[i] + "/";
 
-            li = $("<li />");
-            if ( i + 1 == bc.length ) {
-                $(li).addClass("active");
-            }
+      li = $("<li />");
+      if ( i + 1 == bc.length ) {
+        $(li).addClass("current");
+      }
 
-            $(li).html($("<a />").attr("href", crumb).html(bc[i]));
+      $(li).html($("<a />").attr("href", crumb).html(bc[i]));
 
-            if ( i + 1 < bc.length ) {
-                $(li).append($("<span />").addClass("divider").html("/"));
-            }
+      if ( i + 1 < bc.length ) {
+        $(li).append($("<span />").addClass("divider")); //.html("/"));
+      }
 
-            $(".breadcrumb").append(li);
-        }
-    };
+      $(".breadcrumbs").append(li);
+    }
+  };
 
 
     /**
@@ -185,6 +185,35 @@ $(document).ready(function() {
             input : $(this).find("input").val()
         });
         return false;
+    });
+
+    var toggleTheme = function() {
+        if ( $("html").hasClass("oldschool") ) {
+            $(".theme-switcher span").html("old school!");
+        }
+        else {
+            $(".theme-switcher span").html("modern");     
+        }
+    };
+
+    var theme = $.cookie('theme');
+    if(theme) {
+        $('html').addClass(theme);
+        toggleTheme();
+    }
+
+    /** theme switcher! */
+    $(".theme-switcher").on("click", function(e) {
+        e.preventDefault();
+        $("html").toggleClass("oldschool");
+        if ( $("html").hasClass("oldschool") ) {
+            $.cookie('theme', "oldschool");
+        }
+        else {
+            $.cookie('theme', "");
+        }
+
+        toggleTheme();
     });
 
     /**

@@ -129,13 +129,11 @@ GopherParser.prototype.parseEntry = function(dirent) {
  * @return a href that will request this menu entry via the proxy
  */
 GopherParser.prototype.entryToLink = function(e) {
-    var href;
+    var href = "/" + e.host;
 
     if ( e.type == this.entryTypes.html ) {
         return e.path.replace("URL:", "");
     }
-
-    href = "/" + e.host;
 
     // add the port if needed
     if ( e.port != 70 ) {
