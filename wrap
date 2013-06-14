@@ -1,0 +1,16 @@
+#!/bin/bash
+
+PIDFILE="/tmp/gopher-ping.pid"
+export LC_ALL="en_US.UTF-8"
+
+if [ -f $PIDFILE ] && ps -p `cat $PIDFILE` > /dev/null;
+then
+   # Do something knowing the pid exists, i.e. the process with $PID is running
+   echo "RUNNING" > /dev/null
+else
+    echo "NOT RUNNING"
+    /bin/bash -c "echo $$ > $PIDFILE; rvmsudo /home/mitchc2/.rvm/gems/ruby-1.9.3-p362@global/bin/bundle exec gopher2000 ./gopherpedia.rb"
+fi
+
+
+
