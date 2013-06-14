@@ -225,6 +225,7 @@ $(document).ready(function() {
     }
     else if ( $("#gopher").html() !== "" ) {
         $("#gopher").fromGopher();
+        $("#gopher").show();
     }
 
 });

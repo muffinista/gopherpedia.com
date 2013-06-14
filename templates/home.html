@@ -76,7 +76,7 @@ if ( ! array_key_exists('result', $this->data) && ! array_key_exists('file', $th
           </div>
           
 	        <div id="breadcrumb"></div>
-	        <div id="gopher">
+	        <div id="gopher" style="display:none">
             <?php 
                if ( array_key_exists('result', $this->data) ) {
                  print $this->data["result"]['data'];
@@ -90,7 +90,7 @@ if ( ! array_key_exists('result', $this->data) && ! array_key_exists('file', $th
 
     <footer id="footer">
       <div class="row fill-width">
-        <div class="small-10">
+        <div class="small-8 columns">
 	        <p class="muted credit">Gopherpedia was built by
             <a href="http://muffinlabs.com/">Colin Mitchell</a>.
             Powered
@@ -99,9 +99,27 @@ if ( ! array_key_exists('result', $this->data) && ! array_key_exists('file', $th
             and <a href="https://github.com/muffinista/gophper-proxy">gophper-proxy</a>.
             Enjoy!</p>
         </div>
+        <div class="small-4 columns">
+          <div class="social">
+            <div class="fb-like" data-href="http://gopherpedia.com/" data-send="false" data-layout="button_count" data-width="200" data-show-faces="false"></div>
+
+            <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+          </div>
+        </div>
+
       </div>
     </footer>
     
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <script src="/javascripts/foundation/foundation.js"></script>

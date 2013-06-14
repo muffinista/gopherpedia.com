@@ -15,7 +15,7 @@ $app = new \Slim\Slim();
 $app->get('/', function () use($app) {
     $params = array();
     if ( defined('START_REQUEST') ) {
-      $params['result'] = loadGopher(START_REQUEST, START_INPUT);
+      $params['result'] = loadGopher(START_REQUEST, START_INPUT, false);
     }
     else {
       $params['file'] = "intro.html";
@@ -73,12 +73,12 @@ $app->post('/gopher', function () {
 
 $app->run();
 
-function loadGopher($url, $input) {
+function loadGopher($url, $input, $useCache=true) {
 	$result = array();
 
-  error_log("$url $input");
+  //  error_log("$url $input");
   $x = new GopherGetter($url, $input);
-  if ( $x->isValid() && $x->get() ) {
+  if ( $x->isValid() && $x->get($useCache) ) {
     // send binary files and large text back as an attachment
     if ( $x->isBinary() || $x->size() > 1000000 ) {
       $result['url'] = "/file?name=" . basename($url) . "&path=" . $x->urlFor();

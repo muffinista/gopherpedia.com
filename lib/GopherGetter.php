@@ -77,14 +77,16 @@ class GopherGetter {
 		return $this->cache->url($this->key);
   }
 
-  function get() {
+  function get($useCache=true) {
 
-		$this->result = "";
+		$this->result = FALSE;
 		$this->errstr = "";
 		$this->errno = "";
 
+    if ( $useCache == true ) {
+      $this->result = $this->cache->get($this->key);
+    }
 
-		$this->result = $this->cache->get($this->key);
 		if ( $this->result === FALSE ) {
       try { 
         $fp = stream_socket_client("tcp://$this->host:$this->port", $this->errno, $this->errstr, 30);
