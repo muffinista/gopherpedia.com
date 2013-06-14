@@ -1,6 +1,6 @@
 <?php
 
-define('GA_ACCOUNT', 'UA-31225041-1');
+define('GA_ACCOUNT', 'UA-98596-15');
 
 if ( php_uname('n') == "cylon" ) {
   DB::$user = 'root';
