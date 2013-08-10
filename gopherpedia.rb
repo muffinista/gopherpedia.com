@@ -57,6 +57,7 @@ DB = Sequel.connect(db_params)
 def file_for_key(key)
   depth = 4
   root = "/home/mitchc2/gopherpedia-data"
+#  root = "/opt/wiki"
   
   md5 = Digest::MD5.hexdigest(key).to_s
   dir = File.join(root, md5.split(//)[-depth, depth])
@@ -77,7 +78,6 @@ menu :index do |pagelist, featured|
 
   figlet "gopherpedia!"
   br
-
   block "Welcome to **Gopherpedia**, the gopher interface to Wikipedia. This is a direct interface to wikipedia, you can search and read articles via the search form below. Enjoy!"
 
   br
@@ -115,7 +115,7 @@ end
 menu :about do
   figlet "Gopher!"
   br
-  
+
   block "In 1991, the Gopher protocol was born -- a method of searching for and distributing information on the Internet. Gopher was intended to be easy to implement and use, and for a little while, it was very popular."
   br
 
@@ -220,5 +220,10 @@ text :article do |title, article|
     br(2)
   end
 
+  small_header "License"
+  text "All content on Gopherpedia comes from Wikipedia, and is licensed under CC-BY-SA"
+  text "License URL: http://creativecommons.org/licenses/by-sa/3.0/"
+  text "Original Article: http://en.wikipedia.org/wiki/#{title.gsub(/ /, '_')}"
+  
   br
 end
