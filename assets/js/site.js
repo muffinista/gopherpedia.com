@@ -6,7 +6,6 @@ $(document).ready(function() {
      */
     History.Adapter.bind(window, 'statechange', function() {
         var state = History.getState();
-
         if ( state.data.data ) {
             $("#gopher").html(state.data.data).fromGopher();
 
@@ -14,8 +13,8 @@ $(document).ready(function() {
             updateBreadcrumb(state.data.url);
         }
         else {
-            $("#gopher,#breadcrumb").fadeOut().html("");
-            $("#intro").fadeIn();
+//            $("#gopher,#breadcrumb").fadeOut().html("");
+//            $("#intro").fadeIn();
         }
     });
 
@@ -215,6 +214,7 @@ $(document).ready(function() {
 
         toggleTheme();
     });
+
 
     /**
      * Handle existing URI on the browser's URL -- we'll only do this if the intro is hidden, 
