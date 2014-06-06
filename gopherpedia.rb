@@ -28,7 +28,7 @@ require 'daily'
 @hostname = `uname -n`.chomp.sub(/\..*/,'')
 puts "greetings from #{@hostname}"
 
-if @hostname == "cylon"
+if @hostname == "cylon" || @hostname == "muffit"
   db_params = {
     :adapter => 'mysql2',
     :host => 'localhost',
@@ -54,15 +54,15 @@ end
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
 
-def file_for_key(key)
-  depth = 4
-  root = "/home/mitchc2/gopherpedia-data"
-#  root = "/opt/wiki"
+# def file_for_key(key)
+#   depth = 4
+#   root = "/home/mitchc2/gopherpedia-data"
+# #  root = "/opt/wiki"
   
-  md5 = Digest::MD5.hexdigest(key).to_s
-  dir = File.join(root, md5.split(//)[-depth, depth])
-  File.join(dir, md5)
-end
+#   md5 = Digest::MD5.hexdigest(key).to_s
+#   dir = File.join(root, md5.split(//)[-depth, depth])
+#   File.join(dir, md5)
+# end
 
 require 'gopher2000'
 
@@ -148,10 +148,12 @@ end
 
 route '/lookup' do
   key = request.input.strip
+  f = Fetcher.new
+  total, results = f.search(key)
 
-  results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key) ORDER BY score DESC LIMIT 100", :key => key)
+#  results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key) ORDER BY score DESC LIMIT 100", :key => key)
 
-  total = results.count
+#  total = results.count
   render :search, key, total, results
 end
 
@@ -160,10 +162,13 @@ end
 #
 route '/:title?' do
   if params[:title]
-    file = file_for_key(params[:title])
+    #file = file_for_key(params[:title])
+    #data = open(file, &:read)
 
-    data = open(file, &:read)
-  
+    f = Fetcher.new
+    data = f.get(params[:title])
+    
+    
     p = Parser.new
     a = p.parse(data)
 
@@ -193,8 +198,8 @@ menu :search do |key, total, results|
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
-#    link x[:title], "/get/#{x[:title]}"
-    link x[:title], "/#{x[:title]}"    
+#    link x[:title], "/#{x[:title]}"
+    link x, "/#{x}"
   end
   br
   text "** Powered by Gopher 2000 **"
