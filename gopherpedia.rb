@@ -41,10 +41,10 @@ if @hostname == "cylon" || @hostname == "muffit"
 else
   db_params = {
     :adapter => 'mysql2',
-    :host => 'mysql.muffinlabs.com',
+    :host => 'localhost',
     :database => 'gopherpedia',
-    :user => 'gopherpedia',
-    :password => 'g0ferp3dlia'
+    :user => 'root',
+    :password => '34erdfcv'
   }
 
   host = 'gopherpedia.com'
@@ -67,7 +67,7 @@ DB = Sequel.connect(db_params)
 require 'gopher2000'
 
 #set :non_blocking, false
-set :host, host
+set :host,  'localhost' 
 set :port, port
 set :access_log, "/tmp/gopher.log"
 

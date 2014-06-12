@@ -18,10 +18,9 @@ else {
   define('RESTRICT_TO_MATCH', "/gopherpedia.com/");
   define('CACHE_LIFETIME', 3600);
 
-  DB::$user = 'gopherpedia';
-  DB::$host = 'mysql.muffinlabs.com';
-  DB::$password = 'g0ferp3dlia';
-  DB::$dbName = 'gopherpedia';
+  DB::$user = 'root';
+  DB::$host = 'localhost';
+  DB::$password = '34erdfcv';
   DB::$dbName = 'gopherpedia';
 
   define('START_REQUEST', 'gopherpedia.com/');
