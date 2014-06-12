@@ -93,14 +93,14 @@ menu :index do |pagelist, featured|
   header "Featured Content"
   featured.reverse.each do |f|
 #    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:title]}"
-    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
+    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
   end
   br(2)
 
   header "Recent pages"
   pagelist.each do |p|
 #    link p, "/get/#{p}"
-    link p, "/#{p}"    
+    text_link p, "/#{p}"    
   end
   br
 
@@ -128,7 +128,7 @@ menu :about do
   block "So, I built Gopherpedia. It runs on Gopher2000 (https://github.com/muffinista/gopher2000), a Ruby library I wrote for developing Gopher services. The web proxy to Gopherpedia is GoPHPer (https://github.com/muffinista/gophper-proxy), which I also wrote."
   br
 
-  link "more about the Gopher protocol", "Gopher (protocol)"
+  text_link "more about the Gopher protocol", "Gopher (protocol)"
   http "gopher2000 - a ruby gopher server", "http://github.com/muffinista/gopher2000"
   http "gophper-proxy - a modern PHP gopher proxy", "http://github.com/muffinista/gophper-proxy"
 
@@ -199,7 +199,7 @@ menu :search do |key, total, results|
   br
   results.each do |x|
 #    link x[:title], "/#{x[:title]}"
-    link x, "/#{x}"
+    text_link x, "/#{x}"
   end
   br
   text "** Powered by Gopher 2000 **"
