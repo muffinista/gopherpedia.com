@@ -178,7 +178,7 @@ route '/:title?' do
   else
    
     # generate a list of recent page requests
-    pagelist = DB[:pages].distinct.select(:title).order(:viewed_at.desc).limit(20).collect { |p|
+    pagelist = DB[:pages].distinct.select(:title).order(:viewed_at).desc.limit(20).collect { |p|
       p[:title]
     }
 
