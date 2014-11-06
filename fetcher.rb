@@ -41,6 +41,7 @@ class Fetcher
     @mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php',
                                  :bot => false,
                                  #:loglevel => Logger::DEBUG,
+                                 :ignorewarnings => true,
                                  :maxlag => 3600,
                                  :limit => 50)
   end

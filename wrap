@@ -9,7 +9,7 @@ then
    echo "RUNNING" > /dev/null
 else
     echo "NOT RUNNING"
-    /bin/bash -c "echo $$ > $PIDFILE; rvmsudo /home/mitchc2/.rvm/gems/ruby-1.9.3-p362@global/bin/bundle exec gopher2000 ./gopherpedia.rb"
+    /bin/bash -c "echo $$ > $PIDFILE; rvmsudo /home/colin/.rvm/gems/ruby-2.1.2/bin/gopher2000 ./gopherpedia.rb >> /tmp/startup.log"
 fi
 
 

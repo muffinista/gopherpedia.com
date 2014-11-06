@@ -50,26 +50,35 @@ $app->get('/file', function () use($app) {
 /**
  * this will handle incoming requests that have a gopher URL tacked onto the end
  */
-$app->get('/:dest+', function ($dest) use ($app) {
-	$app->render('home.html', array("class" => "hide"));
-});
+//$app->get('/:dest+', function ($dest) use ($app) {
+//	$app->render('home.html', array("class" => "hide"));
+//});
 
 /**
  * handle AJAX requests for a gopher page
  */
-$app->post('/gopher', function () {
-	$url = $_POST["url"];
-	$input = isset($_POST["input"]) ? $_POST["input"] : NULL;
+$app->get('/gopher', function () {
+	$url = $_GET["url"];
+	$input = isset($_GET["input"]) ? $_GET["input"] : NULL;
 
 	try {
     $result = loadGopher($url, $input);
 	} catch(Exception $e) {
-	  $result['url'] = $_POST["url"];
+	  $result['url'] = $_GET["url"];
 	  $result['data'] = "3Sorry, there was a problem with your request (" . $e->getMessage() . ")\t\tNULL\t70";
 	}
 
 	echo json_encode($result);
 });
+
+/**
+ * this will handle incoming requests that have a gopher URL tacked onto the end
+ */
+$app->get('/:dest+', function ($dest) use ($app) {
+      $app->render('home.html', array("class" => "hide"));
+});
+
+
 
 $app->run();
 

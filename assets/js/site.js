@@ -91,7 +91,7 @@ $(document).ready(function() {
 
         $.ajax({
             url: "/gopher",
-            type: 'post',
+            type: 'get',
             dataType: 'json',
             data: data,
             error:function (xhr, ajaxOptions, thrownError){
