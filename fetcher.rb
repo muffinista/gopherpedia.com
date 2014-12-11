@@ -27,7 +27,7 @@ class MediaWiki::Gateway
       res, offset = make_api_request(form_data, '//query-continue/search/@sroffset')
       total = REXML::XPath.first(res, "//searchinfo").attributes["totalhits"].to_i
       titles += REXML::XPath.match(res, "//p").map { |x| x.attributes["title"] }
-    end while offset && offset.to_i < limit
+    end while offset && offset.to_s.to_i < limit
     return total, titles
   end
 end
