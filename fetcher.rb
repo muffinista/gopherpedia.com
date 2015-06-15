@@ -27,7 +27,7 @@ class MediaWiki::Gateway
       res, offset = make_api_request(form_data, '//query-continue/search/@sroffset')
       total = REXML::XPath.first(res, "//searchinfo").attributes["totalhits"].to_i
       titles += REXML::XPath.match(res, "//p").map { |x| x.attributes["title"] }
-    end while offset && offset.to_i < limit
+    end while offset && offset.to_s.to_i < limit
     return total, titles
   end
 end
@@ -38,9 +38,10 @@ class Fetcher
 
   def initialize
     @cache = FileCache.new("gopherpedia", "/tmp", 3600*24, 2)
-    @mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php',
+    @mw = MediaWiki::Gateway.new('https://en.wikipedia.org/w/api.php',
                                  :bot => false,
                                  #:loglevel => Logger::DEBUG,
+                                 :ignorewarnings => true,
                                  :maxlag => 3600,
                                  :limit => 50)
   end
