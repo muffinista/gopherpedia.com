@@ -38,7 +38,7 @@ class Fetcher
 
   def initialize
     @cache = FileCache.new("gopherpedia", "/tmp", 3600*24, 2)
-    @mw = MediaWiki::Gateway.new('http://en.wikipedia.org/w/api.php',
+    @mw = MediaWiki::Gateway.new('https://en.wikipedia.org/w/api.php',
                                  :bot => false,
                                  #:loglevel => Logger::DEBUG,
                                  :ignorewarnings => true,
