@@ -7,24 +7,24 @@ require "rubygems"
 require "bundler/setup"
 require "mysql2"
 require "sequel"
-require 'gopher2000'
 
 require 'fetcher'
 require 'daily'
 
-db_params = {
-  :adapter => 'mysql2',
-  :host => 'hostname',
-  :database => 'dbname',
-  :user => 'dbuser',
-  :password => 'dbpass'
-}
+@hostname = `uname -n`.chomp.sub(/\..*/,'')
+puts "greetings from #{@hostname}"
 
-host = 'gopherpedia.com'
-port = 70
+params = JSON.parse(File.read("config.json"))
+puts params.inspect
 
-# we log requests to a db, here's the connection
+db_params = params["db"]
+host = params["host"]
+port = params["port"].to_i
+
+# connect to an in-memory database
 DB = Sequel.connect(db_params)
+
+require 'gopher2000'
 
 #set :non_blocking, false
 set :host, host
@@ -52,12 +52,14 @@ menu :index do |pagelist, featured|
 
   header "Featured Content"
   featured.reverse.each do |f|
+#    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:title]}"
     link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
   end
   br(2)
 
   header "Recent pages"
   pagelist.each do |p|
+#    link p, "/get/#{p}"
     link p, "/#{p}"    
   end
   br
@@ -109,6 +111,9 @@ route '/lookup' do
   f = Fetcher.new
   total, results = f.search(key)
 
+#  results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key) ORDER BY score DESC LIMIT 100", :key => key)
+
+#  total = results.count
   render :search, key, total, results
 end
 
@@ -127,7 +132,8 @@ route '/:title?' do
     DB[:pages].insert(:title => params[:title])
 
     render :article, params[:title], a
-  else  
+  else
+   
     # generate a list of recent page requests
     pagelist = DB[:pages].distinct.select(:title).order(:viewed_at.desc).limit(20).collect { |p|
       p[:title]
@@ -149,6 +155,7 @@ menu :search do |key, total, results|
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
+#    link x[:title], "/#{x[:title]}"
     link x, "/#{x}"
   end
   br
@@ -156,9 +163,6 @@ menu :search do |key, total, results|
 end
 
 
-#
-# output an article
-#
 text :article do |title, article|
   br
 

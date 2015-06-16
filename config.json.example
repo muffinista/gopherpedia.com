@@ -1,0 +1,11 @@
+{
+  "db": {
+    "adapter" : "mysql2",
+    "host" : "localhost",
+    "database" : "dbname",
+    "user" : "dbuser",
+    "password" : "dbpass"
+  },
+  "host" : "localhost",
+  "port" : 7070
+}
