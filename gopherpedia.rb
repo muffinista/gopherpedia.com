@@ -14,12 +14,11 @@ require 'daily'
 @hostname = `uname -n`.chomp.sub(/\..*/,'')
 puts "greetings from #{@hostname}"
 
-params = JSON.parse(File.read("config.json"))
-puts params.inspect
+opts = JSON.parse(File.read("config.json"))
 
-db_params = params["db"]
-host = params["host"]
-port = params["port"].to_i
+db_params = opts["db"]
+host = opts["host"]
+port = opts["port"].to_i
 
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
