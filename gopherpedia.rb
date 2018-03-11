@@ -28,28 +28,12 @@ require 'daily'
 @hostname = `uname -n`.chomp.sub(/\..*/,'')
 puts "greetings from #{@hostname}"
 
-if @hostname == "cylon" || @hostname == "muffit"
-  db_params = {
-    :adapter => 'mysql2',
-    :host => 'localhost',
-    :database => 'gopherpedia',
-    :user => 'root',
-    :password => nil
-  }
-  host = 'localhost'
-  port = 7070
-else
-  db_params = {
-    :adapter => 'mysql2',
-    :host => 'localhost',
-    :database => 'gopherpedia',
-    :user => 'root',
-    :password => '34erdfcv'
-  }
+opts = JSON.parse(File.read("config.json"))
+puts opts.inspect
 
-  host = 'gopherpedia.com'
-  port = 70
-end
+db_params = opts["db"]
+host = opts["host"]
+port = opts["port"].to_i
 
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
@@ -178,7 +162,7 @@ route '/:title?' do
   else
    
     # generate a list of recent page requests
-    pagelist = DB[:pages].distinct.select(:title).order(Sequel.desc(:viewed_at)).limit(20).collect { |p|
+    pagelist = DB[:pages].select(:title).order(Sequel.desc(:viewed_at)).limit(20).collect { |p|
       p[:title]
     }
 

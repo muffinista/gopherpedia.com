@@ -2,7 +2,7 @@
 require "rubygems"
 require "bundler/setup"
 require "filecache"
-require "feedzirra"
+require "feedjira"
 
 # http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=onthisday&feedformat=atom
 # http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom
@@ -17,7 +17,7 @@ class FeaturedContent
     @feed = @cache.get(@key) unless force
     unless @feed
       puts "feed not cached, fetch"
-      @feed = Feedzirra::Feed.fetch_and_parse("http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
+      @feed = Feedjira::Feed.fetch_and_parse("http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
       @cache.set(@key, @feed)
     end
 
