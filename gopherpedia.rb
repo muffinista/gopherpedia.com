@@ -1,20 +1,6 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
-# grep -v -E '^Help:|MediaWiki:|Portal:|Template:|Wikipedia:|File:|Category:' /tmp/titles > /tmp/shorter-titles
-
-# cat shorter-titles | sed "s/'/''/g" | sed "s/.*/'&'/" > titles-load
-# 10266  grep ":" /tmp/titles |  awk '{split($0,a,":"); print a[1]}' | sort | uniq -c | sort -n
-
- #    596 Help
- #   1648 MediaWiki
- #   3361 Book
- # 106542 Portal
- # 385378 Template
- # 657283 Wikipedia
- # 818681 File
- # 949431 Category
-
 $: << File.dirname(__FILE__) unless $:.include? File.dirname(__FILE__)
 
 require "rubygems"
@@ -38,20 +24,10 @@ port = opts["port"].to_i
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
 
-# def file_for_key(key)
-#   depth = 4
-#   root = "/home/mitchc2/gopherpedia-data"
-# #  root = "/opt/wiki"
-  
-#   md5 = Digest::MD5.hexdigest(key).to_s
-#   dir = File.join(root, md5.split(//)[-depth, depth])
-#   File.join(dir, md5)
-# end
-
 require 'gopher2000'
 
 #set :non_blocking, false
-set :host, host 
+set :host, host
 set :port, port
 set :access_log, "/tmp/gopher.log"
 
@@ -76,15 +52,15 @@ menu :index do |pagelist, featured|
 
   header "Featured Content"
   featured.reverse.each do |f|
-#    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/get/#{f[:title]}"
-    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
+#    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
+    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
   end
   br(2)
 
   header "Recent pages"
   pagelist.each do |p|
-#    link p, "/get/#{p}"
-    text_link p, "/#{p}"    
+#    text_link p, "/#{p}"    
+    link p, "/#{p}"    
   end
   br
 
@@ -112,7 +88,9 @@ menu :about do
   block "So, I built Gopherpedia. It runs on Gopher2000 (https://github.com/muffinista/gopher2000), a Ruby library I wrote for developing Gopher services. The web proxy to Gopherpedia is GoPHPer (https://github.com/muffinista/gophper-proxy), which I also wrote."
   br
 
-  text_link "more about the Gopher protocol", "Gopher (protocol)"
+  #text_link "more about the Gopher protocol", "Gopher (protocol)"
+  link "more about the Gopher protocol", "Gopher (protocol)"
+
   http "gopher2000 - a ruby gopher server", "http://github.com/muffinista/gopher2000"
   http "gophper-proxy - a modern PHP gopher proxy", "http://github.com/muffinista/gophper-proxy"
 
@@ -146,9 +124,6 @@ end
 #
 route '/:title?' do
   if params[:title]
-    #file = file_for_key(params[:title])
-    #data = open(file, &:read)
-
     f = Fetcher.new
     data = f.get(params[:title])
     
@@ -162,7 +137,8 @@ route '/:title?' do
   else
    
     # generate a list of recent page requests
-    pagelist = DB[:pages].select(:title).order(Sequel.desc(:viewed_at)).limit(20).collect { |p|
+#    pagelist = DB[:pages].select(:title).order(Sequel.desc(:viewed_at)).limit(20).collect { |p|
+    pagelist = DB[:pages].distinct.select(:title).order(:viewed_at.desc).limit(20).collect { |p|
       p[:title]
     }
 
@@ -182,8 +158,8 @@ menu :search do |key, total, results|
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
-#    link x[:title], "/#{x[:title]}"
-    text_link x, "/#{x}"
+#    text_link x, "/#{x}"
+    link x, "/#{x}"
   end
   br
   text "** Powered by Gopher 2000 **"
@@ -195,8 +171,6 @@ text :article do |title, article|
 
   big_header title
 
-#||
-#    ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)  
   article.sections.reject { |k, v|
     v.output.length == 0 || v.output.gsub("*", "").strip.length == 0
   }.each do |k, section|

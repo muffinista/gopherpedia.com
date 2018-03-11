@@ -1,6 +1,19 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+
+#
+# Hi! Welcome to some of the ugliest code I've ever published.
+#
+# This code takes wikitext and strips as much formatting from it as
+# possible, while retaining the source text. Since wikietext is
+# amazingly un-machine readable, and has a lot of weird extensions,
+# this is a ridiculous collection of iteration,  regexps, gsubs, etc.
+#
+# you can almost certainly do a better job, but this does as good of a
+# job as i needed. enjoy!
+#
+
 $: << File.dirname(__FILE__) unless $:.include? File.dirname(__FILE__)
 
 require "sanitize"
@@ -326,7 +339,7 @@ if __FILE__ == $0
   
   p = Parser.new
   article = p.parse(wikitext)
-puts article.sections.keys.inspect
+
   article.sections.reject { |k, v|
     v.output.length == 0 ||
     ["see also", "references", "external links", "primary sources", "secondary sources" ].include?(k.downcase)
