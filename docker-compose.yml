@@ -1,0 +1,39 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    volumes:
+      - ./scripts/stats.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+  gopher:
+    build: .
+    command: bundle exec gopher2000/bin/gopher2000 gopherpedia.rb
+    volumes:
+      - .:/app
+    ports:
+      - "7070:7070"
+    links:
+      - db
+    depends_on:
+      - db
+    tty: true
+    stdin_open: true
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-proxy
+    links:
+      - db
+      - gopher
+    depends_on:
+      - db
+      - gopher
+    environment:
+      docker: "true"
+      production: "false"
+    volumes:
+      - .:/var/www/html:cached
+      - ./logs:/var/www/logs:cached
+    ports:
+      - 8080:80

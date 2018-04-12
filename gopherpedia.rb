@@ -8,6 +8,7 @@ require "bundler/setup"
 require "mysql2"
 require "sequel"
 
+require 'parser'
 require 'fetcher'
 require 'daily'
 
@@ -26,16 +27,15 @@ DB = Sequel.connect(db_params)
 
 require 'gopher2000'
 
-#set :non_blocking, false
+set :non_blocking, false
 set :host, host
 set :port, port
-set :access_log, "/tmp/gopher.log"
+set :access_log, "/app/gopher.log"
 
 #
 # main index for the server
 #
 menu :index do |pagelist, featured|
-
   figlet "gopherpedia!"
   br
   block "Welcome to **Gopherpedia**, the gopher interface to Wikipedia. This is a direct interface to wikipedia, you can search and read articles via the search form below. Enjoy!"
@@ -52,15 +52,13 @@ menu :index do |pagelist, featured|
 
   header "Featured Content"
   featured.reverse.each do |f|
-#    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
-    link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
+    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
   end
   br(2)
 
   header "Recent pages"
   pagelist.each do |p|
-#    text_link p, "/#{p}"    
-    link p, "/#{p}"    
+    text_link p, "/#{p}"
   end
   br
 
@@ -113,9 +111,6 @@ route '/lookup' do
   f = Fetcher.new
   total, results = f.search(key)
 
-#  results = DB[:titles].with_sql("SELECT title, MATCH (title) AGAINST (:key) AS score FROM titles WHERE MATCH(title) AGAINST(:key) ORDER BY score DESC LIMIT 100", :key => key)
-
-#  total = results.count
   render :search, key, total, results
 end
 
@@ -123,25 +118,26 @@ end
 # main route
 #
 route '/:title?' do
-  if params[:title]
+  if params[:title] && ! params[:title].strip.nil? && params[:title] != "/"
     f = Fetcher.new
     data = f.get(params[:title])
     
-    
     p = Parser.new
     a = p.parse(data)
-
+    
     DB[:pages].insert(:title => params[:title])
-
+    
     render :article, params[:title], a
   else
-   
+    puts "render index"
     # generate a list of recent page requests
-#    pagelist = DB[:pages].select(:title).order(Sequel.desc(:viewed_at)).limit(20).collect { |p|
-    pagelist = DB[:pages].distinct.select(:title).order(:viewed_at.desc).limit(20).collect { |p|
-      p[:title]
-    }
+    #pagelist = DB[:pages].select(:title).order(Sequel.desc(:viewed_at)).limit(30).uniq.collect { |p|
 
+    pagelist = DB[:pages].distinct.
+                 select(:title, :viewed_at).
+                 order(Sequel.desc(:viewed_at)).
+                 limit(20).collect { |p| p[:title] }
+    
     # pull featured content
     f = FeaturedContent.new
     featured = f.fetch
@@ -158,8 +154,7 @@ menu :search do |key, total, results|
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
-#    text_link x, "/#{x}"
-    link x, "/#{x}"
+    text_link x, "/#{x}"
   end
   br
   text "** Powered by Gopher 2000 **"

@@ -2,14 +2,15 @@
 
 define('GA_ACCOUNT', 'UA-98596-15');
 
-if ( php_uname('n') == "cylon" ) {
+if($_ENV['docker']) {
   DB::$user = 'root';
+  DB::$host = 'db';
   DB::$password = '';
   DB::$dbName = 'gopherpedia';
   //  define('RESTRICT_TO_MATCH', "/gopherpedia.com/");
   define('CACHE_LIFETIME', 1);
 
-  define('START_REQUEST', 'localhost:7070/');
+  define('START_REQUEST', 'gopher:7070/');
   define('START_INPUT', '');
 
 }
