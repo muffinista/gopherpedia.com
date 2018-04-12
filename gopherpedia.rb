@@ -30,7 +30,7 @@ require 'gopher2000'
 set :non_blocking, false
 set :host, host
 set :port, port
-set :access_log, "/app/gopher.log"
+set :access_log, "gopher.log"
 
 #
 # main index for the server
@@ -129,10 +129,7 @@ route '/:title?' do
     
     render :article, params[:title], a
   else
-    puts "render index"
     # generate a list of recent page requests
-    #pagelist = DB[:pages].select(:title).order(Sequel.desc(:viewed_at)).limit(30).uniq.collect { |p|
-
     pagelist = DB[:pages].distinct.
                  select(:title, :viewed_at).
                  order(Sequel.desc(:viewed_at)).

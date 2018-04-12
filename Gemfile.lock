@@ -45,7 +45,7 @@ GEM
     mini_portile2 (2.3.0)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    mysql2 (0.3.16)
+    mysql2 (0.5.1)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     sanitize (2.1.0)
@@ -65,7 +65,7 @@ DEPENDENCIES
   filecache
   gopher2000!
   mediawiki_api
-  mysql2
+  mysql2 (~> 0.5.1)
   nokogiri
   sanitize
   sequel

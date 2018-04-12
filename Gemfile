@@ -9,7 +9,7 @@ gem "sanitize"
 gem "nokogiri"
 
 gem "sequel"
-gem "mysql2"
+gem "mysql2", "~> 0.5.1"
 
 gem "daemons"
 
