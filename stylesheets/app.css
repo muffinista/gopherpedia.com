@@ -6800,3 +6800,8 @@ html.oldschool body #gopher a:hover, html.oldschool body #intro a:hover {
 #footer .social {
   margin-top: 9px;
 }
+
+
+#main form.form-inline input, #main form.form-inline button {
+  min-height: 44px;
+}
