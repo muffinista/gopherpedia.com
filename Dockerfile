@@ -1,4 +1,4 @@
-FROM ruby:2.5.1
+FROM ruby:2.6.3
 MAINTAINER Colin Mitchell <colin@muffinlabs.com>
 
 ENV GOPHER_ADDRESS localhost
