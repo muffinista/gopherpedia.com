@@ -20,9 +20,7 @@ services:
     tty: true
     stdin_open: true
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile-proxy
+    image: muffinista/gophper-proxy
     links:
       - db
       - gopher
@@ -32,6 +30,10 @@ services:
     environment:
       docker: "true"
       production: "false"
+      ALLOW_ALL_PORTS: "false"
+      RESTRICT_TO_MATCH: "/gopherpedia.com/"
+      START_REQUEST: "gopherpedia.com:70"
+      APP_NAME: "Gopherpedia"
     volumes:
       - .:/var/www/html:cached
       - ./logs:/var/www/logs:cached
