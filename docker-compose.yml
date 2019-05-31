@@ -1,14 +1,18 @@
 version: '3'
 services:
   db:
-    image: mysql
+    image: library/mariadb:5.5.56
     volumes:
       - ./scripts/stats.sql:/docker-entrypoint-initdb.d/dump.sql
+    restart: on-failure
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    networks:
+      - internal_network
   gopher:
     build: .
-    command: bundle exec gopher2000/bin/gopher2000 gopherpedia.rb
+    command: bundle exec gopher2000 gopherpedia.rb
+    restart: on-failure
     volumes:
       - .:/app
     ports:
@@ -19,8 +23,15 @@ services:
       - db
     tty: true
     stdin_open: true
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    networks:
+      - internal_network
+      - external_network
   web:
-    image: muffinista/gophper-proxy
+    image: muffinista/gopher-proxy
+    restart: on-failure
     links:
       - db
       - gopher
@@ -38,4 +49,13 @@ services:
       - .:/var/www/html:cached
       - ./logs:/var/www/logs:cached
     ports:
-      - 8080:80
+      - "8080:80"
+    networks:
+      - internal_network
+      - external_network
+networks:
+  external_network:
+  internal_network:
+    internal: true
+volumes:
+  bundle_cache:
