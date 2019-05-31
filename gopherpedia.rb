@@ -19,8 +19,14 @@ opts = JSON.parse(File.read("config.json"))
 puts opts.inspect
 
 db_params = opts["db"]
-host = opts["host"]
-port = opts["port"].to_i
+host = (opts["host"] || ENV['GOPHER_HOST'])
+port = (opts["port"] || ENV['GOPHER_PORT']).to_i
+
+
+#host = opts["host"]
+#port = opts["port"].to_i
+
+puts "HOST #{host} PORT #{port}"
 
 # connect to an in-memory database
 DB = Sequel.connect(db_params)
@@ -130,10 +136,10 @@ route '/:title?' do
     render :article, params[:title], a
   else
     # generate a list of recent page requests
-    pagelist = DB[:pages].distinct.
-                 select(:title, :viewed_at).
-                 order(Sequel.desc(:viewed_at)).
-                 limit(20).collect { |p| p[:title] }
+    pagelist = DB[:pages]
+                 .order(Sequel.desc(:viewed_at))
+                 .distinct(:title)
+                 .limit(20).collect { |p| p[:title] }
     
     # pull featured content
     f = FeaturedContent.new
