@@ -12,16 +12,19 @@ require 'parser'
 require 'fetcher'
 require 'daily'
 
-@hostname = `uname -n`.chomp.sub(/\..*/,'')
+#@hostname = `uname -n`.chomp.sub(/\..*/,'')
+
+@hostname = `hostname -i`.chomp
 puts "greetings from #{@hostname}"
 
 opts = JSON.parse(File.read("config.json"))
 puts opts.inspect
 
 db_params = opts["db"]
-host = (opts["host"] || ENV['GOPHER_HOST'])
+#host = (opts["host"] || ENV['GOPHER_HOST'])
 port = (opts["port"] || ENV['GOPHER_PORT']).to_i
 
+host = '0.0.0.0'
 
 #host = opts["host"]
 #port = opts["port"].to_i
@@ -47,24 +50,24 @@ menu :index do |pagelist, featured|
   block "Welcome to **Gopherpedia**, the gopher interface to Wikipedia. This is a direct interface to wikipedia, you can search and read articles via the search form below. Enjoy!"
 
   br
-  menu "more about gopherpedia", "/about"
+  menu "more about gopherpedia", "/about", 'gopherpedia.com'
 
   # use br(x) to add x space between lines
   br(2)
 
   # ask for some input
   text "Search gopherpedia:"
-  input 'Search Gopherpedia', '/lookup'
+  input 'Search Gopherpedia', '/lookup', 'gopherpedia.com'
 
   header "Featured Content"
   featured.reverse.each do |f|
-    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}"
+    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}", 'gopherpedia.com'
   end
   br(2)
 
   header "Recent pages"
   pagelist.each do |p|
-    text_link p, "/#{p}"
+    text_link p, "/#{p}", 'gopherpedia.com'
   end
   br
 
@@ -157,7 +160,7 @@ menu :search do |key, total, results|
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
-    text_link x, "/#{x}"
+    text_link x, "/#{x}", 'gopherpedia.com'
   end
   br
   text "** Powered by Gopher 2000 **"

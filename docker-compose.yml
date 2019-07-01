@@ -16,7 +16,8 @@ services:
     volumes:
       - .:/app
     ports:
-      - "7070:7070"
+      #- "70:7070"
+      - "70:70"      
     links:
       - db
     depends_on:
@@ -40,13 +41,15 @@ services:
       - gopher
     environment:
       docker: "true"
-      production: "false"
+      production: "true"
       ALLOW_ALL_PORTS: "false"
       RESTRICT_TO_MATCH: "/gopherpedia.com/"
       START_REQUEST: "gopherpedia.com:70"
       APP_NAME: "Gopherpedia"
+      GOPHER_TITLE: "Gopherpedia"
+      GOPHER_ABOUT_URL: "/about"
+      GOPHER_DESCRIPTION: "Gopherpedia, the gopher interface to Wikipedia."
     volumes:
-      - .:/var/www/html:cached
       - ./logs:/var/www/logs:cached
     ports:
       - "8080:80"

@@ -30,7 +30,7 @@ RUN bundle check || bundle install
 ADD . /app
 
 ENV GOPHER_HOST 0.0.0.0
-#gopherpedia.com
+#ENV GOPHER_HOST gopherpedia.com
 ENV GOPHER_PORT 7070
 EXPOSE $GOPHER_PORT
 

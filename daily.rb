@@ -22,7 +22,7 @@ class FeaturedContent
     unless @feed
       puts "feed not cached, fetch"
 
-      @feed = Feedjira::Feed.fetch_and_parse("http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
+      @feed = Feedjira::Feed.fetch_and_parse("https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
 
       @cache.set(@key, @feed)
     end
@@ -31,12 +31,21 @@ class FeaturedContent
 
     @feed.entries.each do |entry|
       doc = Nokogiri::HTML(entry.summary)
-
+#      puts doc.inspect
       doc.xpath("//a").each do |a|
         if a.children.first.name != "img"
+          if a.attributes['title']
+            title = a.attributes["title"].value
+          else
+            title = a.text
+          end
+
+#          puts a.inspect
+#          puts title
+#          puts a.attributes["href"]
           result << {
             :date => entry.published,
-            :title => a.attributes["title"].value,
+            :title => title,
             :href => a.attributes["href"].value.gsub("/wiki/", "")
           }
           break
