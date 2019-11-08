@@ -12,7 +12,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     artii (2.1.2)
-    crass (1.0.4)
+    crass (1.0.5)
     daemons (1.1.9)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
@@ -36,7 +36,7 @@ GEM
     logging (2.2.2)
       little-plugger (~> 1.1)
       multi_json (~> 1.10)
-    loofah (2.2.3)
+    loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mediawiki_api (0.7.1)
