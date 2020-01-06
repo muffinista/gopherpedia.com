@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 gem "gopher2000", git:"https://github.com/muffinista/gopher2000.git"
 
@@ -9,7 +9,7 @@ gem "sanitize"
 gem "nokogiri"
 
 gem "sequel"
-gem "mysql2", "~> 0.5.1"
+gem "mysql2", "~> 0.5.3"
 
 gem "daemons"
 

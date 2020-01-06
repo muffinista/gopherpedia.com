@@ -1,22 +1,22 @@
 GIT
   remote: https://github.com/muffinista/gopher2000.git
-  revision: 0b5333c368b307772a41b4bc77b208d5c3f9196b
+  revision: b024a6367513ffc218698e09e75a982329fc4011
   specs:
-    gopher2000 (0.5.2)
+    gopher2000 (0.5.3)
       artii (>= 2.0.1)
       eventmachine (~> 1.2.5)
       logging
       mimemagic
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     artii (2.1.2)
     crass (1.0.5)
     daemons (1.1.9)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
-    eventmachine (1.2.5)
+    eventmachine (1.2.7)
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     faraday-cookie_jar (0.0.6)
@@ -43,14 +43,14 @@ GEM
       faraday (~> 0.9, >= 0.9.0)
       faraday-cookie_jar (~> 0.0, >= 0.0.6)
       faraday_middleware (~> 0.10, >= 0.10.0)
-    mimemagic (0.3.2)
+    mimemagic (0.3.3)
     mini_portile2 (2.4.0)
-    multi_json (1.13.1)
+    multi_json (1.14.1)
     multipart-post (2.0.0)
-    mysql2 (0.5.1)
-    nokogiri (1.10.4)
+    mysql2 (0.5.3)
+    nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
-    nokogumbo (2.0.1)
+    nokogumbo (2.0.2)
       nokogiri (~> 1.8, >= 1.8.4)
     sanitize (5.0.0)
       crass (~> 1.0.2)
@@ -71,10 +71,10 @@ DEPENDENCIES
   filecache
   gopher2000!
   mediawiki_api
-  mysql2 (~> 0.5.1)
+  mysql2 (~> 0.5.3)
   nokogiri
   sanitize
   sequel
 
 BUNDLED WITH
-   1.17.2
+   1.17.3

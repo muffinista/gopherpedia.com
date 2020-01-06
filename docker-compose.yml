@@ -11,8 +11,12 @@ services:
       - internal_network
   gopher:
     build: .
+    #image: muffinista/gopherpedia
     command: bundle exec gopher2000 gopherpedia.rb
     restart: on-failure
+    environment:
+      GOPHER_PORT: 70
+      GOPHERPEDIA_DB_URI: 'mysql2://root:@db/gopherpedia'
     volumes:
       - .:/app
     ports:
@@ -49,8 +53,8 @@ services:
       GOPHER_TITLE: "Gopherpedia"
       GOPHER_ABOUT_URL: "/about"
       GOPHER_DESCRIPTION: "Gopherpedia, the gopher interface to Wikipedia."
-    volumes:
-      - ./logs:/var/www/logs:cached
+#    volumes:
+#      - ./logs:/var/www/logs:cached
     ports:
       - "8080:80"
     networks:

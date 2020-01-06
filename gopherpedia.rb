@@ -12,34 +12,22 @@ require 'parser'
 require 'fetcher'
 require 'daily'
 
-#@hostname = `uname -n`.chomp.sub(/\..*/,'')
-
-@hostname = `hostname -i`.chomp
-puts "greetings from #{@hostname}"
-
-opts = JSON.parse(File.read("config.json"))
-puts opts.inspect
-
-db_params = opts["db"]
-#host = (opts["host"] || ENV['GOPHER_HOST'])
-port = (opts["port"] || ENV['GOPHER_PORT']).to_i
-
+port = (ENV['GOPHER_PORT'] || 70).to_i
 host = '0.0.0.0'
-
-#host = opts["host"]
-#port = opts["port"].to_i
 
 puts "HOST #{host} PORT #{port}"
 
 # connect to an in-memory database
-DB = Sequel.connect(db_params)
+if ENV['GOPHERPEDIA_DB_URI']
+  puts "Connect to #{ENV['GOPHERPEDIA_DB_URI']}"
+  DB = Sequel.connect(ENV['GOPHERPEDIA_DB_URI'])
+end
 
 require 'gopher2000'
 
 set :non_blocking, false
 set :host, host
 set :port, port
-set :access_log, "gopher.log"
 
 #
 # main index for the server
@@ -134,16 +122,22 @@ route '/:title?' do
     p = Parser.new
     a = p.parse(data)
     
-    DB[:pages].insert(:title => params[:title])
+    if defined?(DB)
+      DB[:pages].insert(:title => params[:title])
+    end
     
     render :article, params[:title], a
   else
     # generate a list of recent page requests
-    pagelist = DB[:pages]
-                 .order(Sequel.desc(:viewed_at))
-                 .distinct(:title)
-                 .limit(20).collect { |p| p[:title] }
-    
+    pagelist = if defined?(DB)
+                 DB[:pages]
+                   .order(Sequel.desc(:viewed_at))
+                   .distinct(:title)
+                   .limit(20).collect { |p| p[:title] }
+               else
+                 []
+               end
+
     # pull featured content
     f = FeaturedContent.new
     featured = f.fetch
