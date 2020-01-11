@@ -122,7 +122,7 @@ route '/:title?' do
     p = Parser.new
     a = p.parse(data)
     
-    if defined?(DB)
+    if defined?(DB) && !data.nil? && data != ""
       DB[:pages].insert(:title => params[:title])
     end
     
