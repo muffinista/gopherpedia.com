@@ -1,19 +1,8 @@
-GIT
-  remote: https://github.com/muffinista/gopher2000.git
-  revision: b024a6367513ffc218698e09e75a982329fc4011
-  specs:
-    gopher2000 (0.5.3)
-      artii (>= 2.0.1)
-      eventmachine (~> 1.2.5)
-      logging
-      mimemagic
-
 GEM
   remote: https://rubygems.org/
   specs:
     artii (2.1.2)
     crass (1.0.5)
-    daemons (1.1.9)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     eventmachine (1.2.7)
@@ -30,6 +19,11 @@ GEM
       loofah (~> 2.0)
       sax-machine (~> 1.0)
     filecache (1.0)
+    gopher2000 (0.5.3)
+      artii (>= 2.0.1)
+      eventmachine (~> 1.2.5)
+      logging
+      mimemagic
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     little-plugger (1.1.4)
@@ -66,10 +60,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  daemons
   feedjira
   filecache
-  gopher2000!
+  gopher2000 (~> 0.5.3)
   mediawiki_api
   mysql2 (~> 0.5.3)
   nokogiri

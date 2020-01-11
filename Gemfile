@@ -1,17 +1,17 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "gopher2000", git:"https://github.com/muffinista/gopher2000.git"
+# gem 'irb', require: false
 
-gem "mediawiki_api"
+gem 'gopher2000', '~> 0.5.3'
 
-gem "filecache"
-gem "sanitize"
-gem "nokogiri"
+gem 'mediawiki_api'
 
-gem "sequel"
-gem "mysql2", "~> 0.5.3"
+gem 'filecache'
+gem 'sanitize'
+gem 'nokogiri'
 
-gem "daemons"
+gem 'sequel'
+gem 'mysql2', '~> 0.5.3'
 
-gem "feedjira" #, "~> 0.1.2"
+gem 'feedjira'
 
