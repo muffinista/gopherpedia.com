@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-# gem 'irb', require: false
+gem 'irb', require: false
 
 gem 'gopher2000', '~> 0.5.3'
 

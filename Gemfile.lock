@@ -26,6 +26,9 @@ GEM
       mimemagic
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    io-console (0.5.4)
+    irb (1.2.1)
+      reline (>= 0.0.1)
     little-plugger (1.1.4)
     logging (2.2.2)
       little-plugger (~> 1.1)
@@ -46,6 +49,8 @@ GEM
       mini_portile2 (~> 2.4.0)
     nokogumbo (2.0.2)
       nokogiri (~> 1.8, >= 1.8.4)
+    reline (0.1.2)
+      io-console (~> 0.5)
     sanitize (5.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.8.0)
@@ -63,6 +68,7 @@ DEPENDENCIES
   feedjira
   filecache
   gopher2000 (~> 0.5.3)
+  irb
   mediawiki_api
   mysql2 (~> 0.5.3)
   nokogiri
