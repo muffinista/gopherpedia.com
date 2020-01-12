@@ -13,6 +13,7 @@ RUN apt-get update -qq && apt-get install -qq --no-install-recommends \
     build-essential \
     mariadb-client \
     libmariadbclient-dev \
+    restic \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
