@@ -3,6 +3,7 @@ require "rubygems"
 require "bundler/setup"
 require "filecache"
 require "feedjira"
+require 'net/http'
 
 #
 # grab wikipedia's daily featured content atom feed
@@ -12,6 +13,8 @@ require "feedjira"
 # http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom
 
 class FeaturedContent
+  FEED_URL = "https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom"
+  
   def initialize
     @cache = FileCache.new("gopherpedia", "/tmp", 3600, 2)
     @key = "featured.atom"
@@ -22,7 +25,9 @@ class FeaturedContent
     unless @feed
       puts "feed not cached, fetch"
 
-      @feed = Feedjira::Feed.fetch_and_parse("https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
+      uri = URI(FEED_URL)
+      data = Net::HTTP.get(uri)
+      @feed = Feedjira.parse(data)
 
       @cache.set(@key, @feed)
     end

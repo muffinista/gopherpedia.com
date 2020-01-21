@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'irb', require: false
 
-gem 'gopher2000', '~> 0.5.3'
+gem 'gopher2000', '~> 0.5.4'
 
 gem 'mediawiki_api'
 
