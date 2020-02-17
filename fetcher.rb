@@ -27,7 +27,10 @@ class Fetcher
   def get(key, exp = 3600)
     result = @cache.get(key)
     unless result
-      result = @mw.get_wikitext(key).body.force_encoding("UTF-8")
+      response = @mw.get_wikitext(key)
+      raise StandardError.new(response.status.to_s) unless response.status == 200
+
+      result = response.body.force_encoding("UTF-8")
       @cache.set(key, result)
     end
     result

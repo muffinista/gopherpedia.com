@@ -15,12 +15,12 @@ require 'daily'
 port = (ENV['GOPHER_PORT'] || 70).to_i
 host = '0.0.0.0'
 
-puts "HOST #{host} PORT #{port}"
+# puts "HOST #{host} PORT #{port}"
 
-# connect to an in-memory database
+# connect to database
 if ENV['GOPHERPEDIA_DB_URI']
-  puts "Connect to #{ENV['GOPHERPEDIA_DB_URI']}"
-  DB = Sequel.connect(ENV['GOPHERPEDIA_DB_URI']) #, sql_mode: [])
+  # puts "Connect to #{ENV['GOPHERPEDIA_DB_URI']}"
+  DB = Sequel.connect(ENV['GOPHERPEDIA_DB_URI'])
 end
 
 require 'gopher2000'
@@ -115,17 +115,26 @@ end
 #
 route '/:title?' do
   if params[:title] && ! params[:title].strip.nil? && params[:title] != "/"
-    f = Fetcher.new
-    data = f.get(params[:title])
+    begin
+      f = Fetcher.new
+      data = f.get(params[:title])
+      if redirect = data.match(/^#REDIRECT \[\[([^]]+)\]\]/)
+        data = f.get(redirect[1])
+      end
+
+      
+      p = Parser.new
+      a = p.parse(data)
     
-    p = Parser.new
-    a = p.parse(data)
+      if defined?(DB) && !data.nil? && data != ""
+        DB[:pages].insert(:title => params[:title])
+      end
     
-    if defined?(DB) && !data.nil? && data != ""
-      DB[:pages].insert(:title => params[:title])
+      render :article, params[:title], a
+    rescue StandardError => ex
+      render :error, "Error", ex.message
     end
-    
-    render :article, params[:title], a
+
   else
     # generate a list of recent page requests
     pagelist = if defined?(DB)
@@ -162,6 +171,19 @@ menu :search do |key, total, results|
   text "** Powered by Gopher 2000 **"
 end
 
+
+menu :error do |code|
+  figlet "Ooops!"
+  br
+
+  text "Looks like something went wrong with that request"
+  br
+  br
+  text "Error #{code.to_s}"
+  br
+  br
+  menu "back to gopherpedia", "/", 'gopherpedia.com'
+end
 
 text :article do |title, article|
   br
