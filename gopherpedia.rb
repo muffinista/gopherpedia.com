@@ -132,7 +132,7 @@ route '/:title?' do
     
       render :article, params[:title], a
     rescue StandardError => ex
-      render :error, "Error", ex.message
+      render :error, ex.message
     end
 
   else
@@ -179,7 +179,7 @@ menu :error do |code|
   text "Looks like something went wrong with that request"
   br
   br
-  text "Error #{code.to_s}"
+  error "Error #{code.to_s}"
   br
   br
   menu "back to gopherpedia", "/", 'gopherpedia.com'
