@@ -17,7 +17,7 @@ GEM
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
     filecache (1.0.2)
-    gopher2000 (0.5.4)
+    gopher2000 (0.5.5)
       artii (>= 2.0.1)
       eventmachine (~> 1.2.5)
       logging
@@ -38,7 +38,7 @@ GEM
       faraday (~> 0.9, >= 0.9.0)
       faraday-cookie_jar (~> 0.0, >= 0.0.6)
       faraday_middleware (~> 0.10, >= 0.10.0)
-    mimemagic (0.3.3)
+    mimemagic (0.3.5)
     mini_portile2 (2.4.0)
     multi_json (1.14.1)
     multipart-post (2.1.1)
@@ -65,7 +65,7 @@ PLATFORMS
 DEPENDENCIES
   feedjira
   filecache
-  gopher2000 (~> 0.5.4)
+  gopher2000 (~> 0.5.5)
   irb
   mediawiki_api
   mysql2 (~> 0.5.3)
