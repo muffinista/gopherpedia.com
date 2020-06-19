@@ -85,8 +85,8 @@ menu :about do
 
   text_link "more about the Gopher protocol", "Gopher (protocol)", 'gopherpedia.com'
 
-  http "gopher2000 - a ruby gopher server", "http://github.com/muffinista/gopher2000"
-  http "gophper-proxy - a modern PHP gopher proxy", "http://github.com/muffinista/gophper-proxy"
+  http "gopher2000 - a ruby gopher server", "http://github.com/muffinista/gopher2000", 'gopherpedia.com'
+  http "gophper-proxy - a modern PHP gopher proxy", "http://github.com/muffinista/gophper-proxy", 'gopherpedia.com'
 
   br
   menu "back to gopherpedia", "/", 'gopherpedia.com'
