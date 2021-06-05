@@ -17,6 +17,10 @@ RUN apt-get update -qq && apt-get install -qq --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy in freedesktop.org.xml which is required for mimemagic
+RUN mkdir -p /usr/share/mime/packages/
+COPY freedesktop.org.xml /usr/share/mime/packages/freedesktop.org.xml
+
 #RUN mkdir -p ${BUNDLE_PATH}
 RUN gem install bundler -v ${BUNDLER_VERSION}
 
