@@ -17,7 +17,7 @@ GEM
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
     filecache (1.0.2)
-    gopher2000 (0.5.5)
+    gopher2000 (0.6.0)
       artii (>= 2.0.1)
       eventmachine (~> 1.2.5)
       logging
@@ -28,9 +28,9 @@ GEM
     irb (1.2.1)
       reline (>= 0.0.1)
     little-plugger (1.1.4)
-    logging (2.2.2)
+    logging (2.3.0)
       little-plugger (~> 1.1)
-      multi_json (~> 1.10)
+      multi_json (~> 1.14)
     loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -42,7 +42,7 @@ GEM
       nokogiri (~> 1)
       rake
     mini_portile2 (2.5.1)
-    multi_json (1.14.1)
+    multi_json (1.15.0)
     multipart-post (2.1.1)
     mysql2 (0.5.3)
     nokogiri (1.11.4)
@@ -70,7 +70,7 @@ PLATFORMS
 DEPENDENCIES
   feedjira
   filecache
-  gopher2000 (~> 0.5.5)
+  gopher2000 (~> 0.6.0)
   irb
   mediawiki_api
   mysql2 (~> 0.5.3)
