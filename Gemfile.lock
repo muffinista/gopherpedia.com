@@ -1,3 +1,14 @@
+GIT
+  remote: https://github.com/muffinista/gopher2000
+  revision: 86177c832d901158ab6a23f406a9b1784db974fb
+  branch: main
+  specs:
+    gopher2000 (0.6.0)
+      artii (>= 2.0.1)
+      eventmachine (~> 1.2.5)
+      logging
+      mimemagic
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -6,32 +17,27 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     eventmachine (1.2.7)
-    faraday (0.17.3)
+    faraday (0.17.4)
       multipart-post (>= 1.2, < 3)
-    faraday-cookie_jar (0.0.6)
-      faraday (>= 0.7.4)
+    faraday-cookie_jar (0.0.7)
+      faraday (>= 0.8.0)
       http-cookie (~> 1.0.0)
     faraday_middleware (0.14.0)
       faraday (>= 0.7.4, < 1.0)
-    feedjira (3.1.0)
+    feedjira (3.2.1)
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
     filecache (1.0.2)
-    gopher2000 (0.6.0)
-      artii (>= 2.0.1)
-      eventmachine (~> 1.2.5)
-      logging
-      mimemagic
-    http-cookie (1.0.3)
+    http-cookie (1.0.4)
       domain_name (~> 0.5)
-    io-console (0.5.5)
-    irb (1.2.1)
-      reline (>= 0.0.1)
+    io-console (0.5.11)
+    irb (1.4.1)
+      reline (>= 0.3.0)
     little-plugger (1.1.4)
     logging (2.3.0)
       little-plugger (~> 1.1)
       multi_json (~> 1.14)
-    loofah (2.4.0)
+    loofah (2.13.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mediawiki_api (0.7.1)
@@ -41,28 +47,25 @@ GEM
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
-    mini_portile2 (2.6.1)
+    mini_portile2 (2.7.1)
     multi_json (1.15.0)
     multipart-post (2.1.1)
     mysql2 (0.5.3)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.13.1)
+      mini_portile2 (~> 2.7.0)
       racc (~> 1.4)
-    nokogumbo (2.0.2)
-      nokogiri (~> 1.8, >= 1.8.4)
-    racc (1.5.2)
-    rake (13.0.3)
-    reline (0.1.2)
+    racc (1.6.0)
+    rake (13.0.6)
+    reline (0.3.1)
       io-console (~> 0.5)
-    sanitize (5.2.1)
+    sanitize (6.0.0)
       crass (~> 1.0.2)
-      nokogiri (>= 1.8.0)
-      nokogumbo (~> 2.0)
+      nokogiri (>= 1.12.0)
     sax-machine (1.3.2)
-    sequel (5.28.0)
+    sequel (5.52.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.6)
+    unf_ext (0.0.8)
 
 PLATFORMS
   ruby
@@ -70,7 +73,7 @@ PLATFORMS
 DEPENDENCIES
   feedjira
   filecache
-  gopher2000 (~> 0.6.0)
+  gopher2000!
   irb
   mediawiki_api
   mysql2 (~> 0.5.3)
