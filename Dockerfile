@@ -1,4 +1,4 @@
-FROM ruby:2.7-slim
+FROM ruby:2.7-slim-buster
 MAINTAINER Colin Mitchell <colin@muffinlabs.com>
 
 ARG BUNDLER_VERSION=1.17.3
@@ -8,12 +8,14 @@ ENV APP_HOME /app
 
 ENV LANG=C.UTF-8
 
-RUN apt-get update -qq && apt-get install -qq --no-install-recommends \
+RUN apt-get update -qq && \
+    apt-get install -qq --no-install-recommends \
     locales \
     build-essential \
     mariadb-client \
     libmariadbclient-dev \
     restic \
+    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
