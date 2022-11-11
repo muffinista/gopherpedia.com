@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/muffinista/gopher2000
-  revision: 86177c832d901158ab6a23f406a9b1784db974fb
+  revision: 203c4936c6277fb6c0817520d33c877e11a86aa4
   branch: main
   specs:
-    gopher2000 (0.6.0)
+    gopher2000 (0.7.0)
       artii (>= 2.0.1)
       eventmachine (~> 1.2.5)
       logging
@@ -34,7 +34,7 @@ GEM
     irb (1.4.1)
       reline (>= 0.3.0)
     little-plugger (1.1.4)
-    logging (2.3.0)
+    logging (2.3.1)
       little-plugger (~> 1.1)
       multi_json (~> 1.14)
     loofah (2.13.0)
@@ -51,7 +51,7 @@ GEM
     multi_json (1.15.0)
     multipart-post (2.1.1)
     mysql2 (0.5.3)
-    nokogiri (1.13.6)
+    nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     racc (1.6.0)
