@@ -11,7 +11,7 @@ gem 'sanitize'
 gem 'nokogiri'
 
 gem 'sequel'
-gem 'mysql2', '~> 0.5.3'
+gem 'mysql2', '~> 0.5.5'
 
 gem 'feedjira'
 

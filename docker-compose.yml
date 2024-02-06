@@ -11,35 +11,27 @@ services:
       - internal_network
   gopher:
     build: .
-    #image: muffinista/gopherpedia
-    command: bundle exec gopher2000 gopherpedia.rb
+    command: bin/wait-for-it db:3306 -- bundle exec gopher2000 gopherpedia.rb
     restart: on-failure
     environment:
       GOPHER_PORT: 70
       GOPHERPEDIA_DB_URI: 'mysql2://root:@db/gopherpedia'
-    volumes:
-      - .:/app
     ports:
       #- "70:7070"
-      - "70:70"      
-    links:
-      - db
+      - "70:70"
     depends_on:
       - db
     tty: true
     stdin_open: true
-    volumes:
-      - .:/app
-      - bundle_cache:/usr/local/bundle
+    # volumes:
+    #   - .:/app
+    #   - bundle_cache:/usr/local/bundle
     networks:
       - internal_network
       - external_network
   web:
     image: muffinista/gopher-proxy
     restart: on-failure
-    links:
-      - db
-      - gopher
     depends_on:
       - db
       - gopher
@@ -48,13 +40,11 @@ services:
       production: "true"
       ALLOW_ALL_PORTS: "false"
       RESTRICT_TO_MATCH: "/gopherpedia.com/"
-      START_REQUEST: "gopherpedia.com:70"
+      START_REQUEST: "gopherpedia.com"
       APP_NAME: "Gopherpedia"
       GOPHER_TITLE: "Gopherpedia"
       GOPHER_ABOUT_URL: "/about"
       GOPHER_DESCRIPTION: "Gopherpedia, the gopher interface to Wikipedia."
-#    volumes:
-#      - ./logs:/var/www/logs:cached
     ports:
       - "8080:80"
     networks:

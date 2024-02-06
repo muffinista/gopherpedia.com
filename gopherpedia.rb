@@ -15,11 +15,11 @@ require 'daily'
 port = (ENV['GOPHER_PORT'] || 70).to_i
 host = '0.0.0.0'
 
-# puts "HOST #{host} PORT #{port}"
+puts "HOST #{host} PORT #{port}"
 
 # connect to database
 if ENV['GOPHERPEDIA_DB_URI']
-  # puts "Connect to #{ENV['GOPHERPEDIA_DB_URI']}"
+  puts "Connect to #{ENV['GOPHERPEDIA_DB_URI']}"
   DB = Sequel.connect(ENV['GOPHERPEDIA_DB_URI'])
 end
 
@@ -118,7 +118,7 @@ route '/:title?' do
     begin
       f = Fetcher.new
       data = f.get(params[:title])
-      if redirect = data.match(/^#REDIRECT \[\[([^]]+)\]\]/)
+      if redirect = data.match(/^#REDIRECT \[\[([^\]]+)\]\]/)
         data = f.get(redirect[1])
       end
 
