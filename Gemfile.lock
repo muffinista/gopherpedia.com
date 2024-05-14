@@ -67,11 +67,11 @@ GEM
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
-    mini_portile2 (2.8.5)
+    mini_portile2 (2.8.6)
     multi_json (1.15.0)
     multipart-post (2.3.0)
     mysql2 (0.5.5)
-    nokogiri (1.16.2)
+    nokogiri (1.16.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     racc (1.7.3)
