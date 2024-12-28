@@ -118,7 +118,7 @@ route '/:title?' do
     begin
       f = Fetcher.new
       data = f.get(params[:title])
-      if redirect = data.match(/^#REDIRECT \[\[([^\]]+)\]\]/)
+      if redirect = data.match(/^#REDIRECT ?\[\[([^\]]+)\]\]/)
         data = f.get(redirect[1])
       end
 
