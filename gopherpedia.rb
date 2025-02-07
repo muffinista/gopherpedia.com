@@ -5,7 +5,7 @@ $: << File.dirname(__FILE__) unless $:.include? File.dirname(__FILE__)
 
 require "rubygems"
 require "bundler/setup"
-require "mysql2"
+require "trilogy"
 require "sequel"
 
 require 'parser'
@@ -20,7 +20,7 @@ puts "HOST #{host} PORT #{port}"
 # connect to database
 if ENV['GOPHERPEDIA_DB_URI']
   puts "Connect to #{ENV['GOPHERPEDIA_DB_URI']}"
-  DB = Sequel.connect(ENV['GOPHERPEDIA_DB_URI'])
+  DB = Sequel.connect(ENV['GOPHERPEDIA_DB_URI'].gsub(/^mysql2/, 'trilogy'))
 end
 
 require 'gopher2000'
@@ -138,13 +138,13 @@ route '/:title?' do
   else
     # generate a list of recent page requests
     pagelist = if defined?(DB)
-                 #DB[:pages].select(:title, Sequel.max(:viewed_at)).group_by(:title).order(Sequel.desc(:viewed_at)).limit(20)
-                 DB[:pages].select(:title, Sequel.function(:max, :viewed_at).as(:viewed_at)).group_by(:title).order(Sequel.desc(:viewed_at)).limit(20).collect { |p| p[:title] }
-               # DB[:pages]
-                 #   .select(:title)
-                 #   .order(Sequel.desc(:viewed_at))
-                 #   .distinct(:title)
-                 #   .limit(20).collect { |p| p[:title] }
+                 DB[:pages]
+                   .select(:title,
+                           Sequel.function(:max, :viewed_at).as(:viewed_at))
+                   .group_by(:title)
+                   .order(Sequel.desc(:viewed_at))
+                   .limit(20)
+                   .collect { |p| p[:title] }
                else
                  []
                end

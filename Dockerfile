@@ -1,9 +1,12 @@
-FROM ruby:3.1.2-slim-buster
-MAINTAINER Colin Mitchell <colin@muffinlabs.com>
+# syntax = docker/dockerfile:1
 
-ARG BUNDLER_VERSION=2.5.6
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+ARG RUBY_VERSION=3.4.1
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 
-ENV APP_HOME /app
+ARG BUNDLER_VERSION=2.6.3
+
+ENV APP_HOME=/app
 
 ENV LANG=C.UTF-8
 ENV BUNDLE_PATH=/app/vendor/bundle BUNDLE_FROZEN=1 BUNDLE_CLEAN=1 BUNDLE_RETRY=3 BUNDLE_JOBS=4
@@ -13,7 +16,6 @@ RUN apt-get update -qq && \
     locales \
     build-essential \
     mariadb-client \
-    libmariadbclient-dev \
     restic \
     git \
     && apt-get clean \
@@ -33,8 +35,8 @@ RUN bundle install
 
 ADD . $APP_HOME
 
-ENV GOPHER_HOST 0.0.0.0
-ENV GOPHER_PORT 7070
+ENV GOPHER_HOST=0.0.0.0
+ENV GOPHER_PORT=7070
 EXPOSE $GOPHER_PORT
 
 CMD ["bundle", "exec", "gopher2000", "gopherpedia.rb"]

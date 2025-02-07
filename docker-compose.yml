@@ -1,7 +1,6 @@
-version: '3'
 services:
   db:
-    image: library/mariadb:5.5.56
+    image: library/mariadb
     volumes:
       - ./scripts/stats.sql:/docker-entrypoint-initdb.d/dump.sql
     restart: on-failure
