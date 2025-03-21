@@ -67,7 +67,7 @@ GEM
     multipart-post (2.4.1)
     net-http (0.6.0)
       uri
-    nokogiri (1.18.3)
+    nokogiri (1.18.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     pp (0.6.2)
@@ -102,7 +102,7 @@ DEPENDENCIES
   gopher2000!
   irb
   mediawiki_api (~> 0.9.0)
-  nokogiri (~> 1.18.3)
+  nokogiri (~> 1.18.4)
   sanitize (~> 7.0.0)
   sequel (~> 5.89.0)
   syslog
