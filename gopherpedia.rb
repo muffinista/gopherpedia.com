@@ -12,16 +12,38 @@ require 'parser'
 require 'fetcher'
 require 'daily'
 
+USE_DB = ENV['GOPHERPEDIA_DB_URI'] != nil
+
 port = (ENV['GOPHER_PORT'] || 70).to_i
 host = '0.0.0.0'
 
 puts "HOST #{host} PORT #{port}"
 
-# connect to database
-if ENV['GOPHERPEDIA_DB_URI']
-  puts "Connect to #{ENV['GOPHERPEDIA_DB_URI']}"
-  DB = Sequel.connect(ENV['GOPHERPEDIA_DB_URI'].gsub(/^mysql2/, 'trilogy'))
+
+#
+# This is a fairly simple wrapper around a DB constant that will check
+# the connection status before returning the db handle. Sequel seems
+# to like having a constant variable for the connection, and the
+# alternative of reconnecting for each request seems ridiculous, so
+# this basically fakes being a constant.
+#
+class DbWrapper
+  MY_DB = nil
+  class << self
+    def connect_to_db
+      self.const_set(:MY_DB, Sequel.connect(ENV['GOPHERPEDIA_DB_URI'].gsub(/^mysql2/, 'trilogy')))
+    end
+
+    def DB
+      if !self.const_get(:MY_DB)&.test_connection
+        self.connect_to_db
+      else
+        self.const_get(:MY_DB)
+      end
+    end
+  end
 end
+
 
 require 'gopher2000'
 
@@ -126,8 +148,8 @@ route '/:title?' do
       p = Parser.new
       a = p.parse(data)
     
-      if defined?(DB) && !data.nil? && data != ""
-        DB[:pages].insert(:title => params[:title])
+      if USE_DB && !data.nil? && data != ""
+        DbWrapper.DB[:pages].insert(:title => params[:title])
       end
     
       render :article, params[:title], a
@@ -137,8 +159,8 @@ route '/:title?' do
 
   else
     # generate a list of recent page requests
-    pagelist = if defined?(DB)
-                 DB[:pages]
+    pagelist = if USE_DB
+                 DbWrapper.DB[:pages]
                    .select(:title,
                            Sequel.function(:max, :viewed_at).as(:viewed_at))
                    .group_by(:title)
