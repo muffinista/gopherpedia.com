@@ -8,7 +8,7 @@ gem 'mediawiki_api', '~> 0.9.0'
 
 gem 'filecache'
 gem 'sanitize', '~> 7.0.0'
-gem 'nokogiri', '~> 1.18.6'
+gem 'nokogiri', '~> 1.18.8'
 
 gem 'sequel', '~> 5.90.0'
 gem 'trilogy'
