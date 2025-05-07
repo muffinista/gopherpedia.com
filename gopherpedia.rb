@@ -135,24 +135,24 @@ end
 #
 # main route
 #
-route '/:title?' do
-  if params[:title] && ! params[:title].strip.nil? && params[:title] != "/"
+route '/*' do
+  title = params[:splat]
+  if title && ! title.strip.nil? && title != "/"
     begin
       f = Fetcher.new
-      data = f.get(params[:title])
+      data = f.get(title)
       if redirect = data.match(/^#REDIRECT ?\[\[([^\]]+)\]\]/)
         data = f.get(redirect[1])
       end
-
       
       p = Parser.new
       a = p.parse(data)
     
       if USE_DB && !data.nil? && data != ""
-        DbWrapper.DB[:pages].insert(:title => params[:title])
+        DbWrapper.DB[:pages].insert(:title => title)
       end
     
-      render :article, params[:title], a
+      render :article, title, a
     rescue StandardError => ex
       render :error, ex.message
     end
