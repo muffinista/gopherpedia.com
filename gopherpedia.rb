@@ -136,8 +136,9 @@ end
 # main route
 #
 route '/*' do
-  title = params[:splat]
-  if title && ! title.strip.nil? && title != "/"
+  title = params[:splat].strip
+
+  if title && title != '/' && title.length > 0
     begin
       f = Fetcher.new
       data = f.get(title)
