@@ -12,6 +12,8 @@ require 'parser'
 require 'fetcher'
 require 'daily'
 
+require 'pry'
+
 USE_DB = ENV['GOPHERPEDIA_DB_URI'] != nil
 
 port = (ENV['GOPHER_PORT'] || 70).to_i
