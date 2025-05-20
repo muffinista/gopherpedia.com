@@ -1,14 +1,13 @@
 GIT
   remote: https://github.com/muffinista/gopher2000
-  revision: 0a238ea0bd80fd357a3542a6462909c120114620
-  branch: switch-to-nio4r
+  revision: 203c4936c6277fb6c0817520d33c877e11a86aa4
+  branch: main
   specs:
     gopher2000 (0.7.0)
       artii (>= 2.0.1)
+      eventmachine (~> 1.2.5)
       logging
       mimemagic
-      nio4r
-      syslog
 
 GEM
   remote: https://rubygems.org/
@@ -19,6 +18,7 @@ GEM
     crass (1.0.6)
     diff-lcs (1.6.2)
     domain_name (0.6.20240107)
+    eventmachine (1.2.7)
     faraday (2.13.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -59,14 +59,11 @@ GEM
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
-    mini_portile2 (2.8.9)
     multi_json (1.15.0)
     multipart-post (2.4.1)
     net-http (0.6.0)
       uri
-    nio4r (2.7.4)
-    nokogiri (1.18.8)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.18.8-x86_64-linux-gnu)
       racc (~> 1.4)
     pry (0.15.2)
       coderay (~> 1.1)
@@ -92,13 +89,11 @@ GEM
     sax-machine (1.3.2)
     sequel (5.90.0)
       bigdecimal
-    syslog (0.3.0)
-      logger
     trilogy (2.9.0)
     uri (1.0.3)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   feedjira

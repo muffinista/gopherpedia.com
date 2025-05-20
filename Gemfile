@@ -4,7 +4,8 @@ gem 'pry', require: 'false'
 
 gem 'gopher2000',
     git: 'https://github.com/muffinista/gopher2000',
-    branch: 'switch-to-nio4r' 
+    branch: 'main'
+#    branch: 'switch-to-nio4r' 
 
 gem 'mediawiki_api', '~> 0.9.0'
 
