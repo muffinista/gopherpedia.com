@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/muffinista/gopher2000
-  revision: 69dcdf61004aed84af15bccf99e7f42c580f4f7e
-  branch: force-encoding
+  revision: 5cb8f56b9cce204bf5c8f3f934fda669a86109c3
+  branch: main
   specs:
     gopher2000 (0.7.0)
       artii (>= 2.0.1)
@@ -16,6 +16,7 @@ GEM
     artii (2.1.2)
     bigdecimal (4.0.1)
     coderay (1.1.3)
+    concurrent-ruby (1.3.5)
     crass (1.0.6)
     diff-lcs (1.6.2)
     domain_name (0.6.20240107)
@@ -41,6 +42,8 @@ GEM
     filecache (1.0.3)
     http-cookie (1.1.0)
       domain_name (~> 0.5)
+    i18n (1.14.7)
+      concurrent-ruby (~> 1.0)
     io-console (0.8.2)
     json (2.18.1)
     little-plugger (1.1.4)
@@ -108,6 +111,7 @@ DEPENDENCIES
   feedjira
   filecache
   gopher2000!
+  i18n
   mediawiki_api (~> 0.9.0)
   nokogiri (~> 1.19.1)
   pry

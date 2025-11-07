@@ -2,9 +2,9 @@ source 'https://rubygems.org'
 
 gem 'pry', require: 'false'
 
-gem 'gopher2000', #path: '../gopher2000'
+gem 'gopher2000',
     git: 'https://github.com/muffinista/gopher2000',
-    branch: 'force-encoding'
+    branch: 'main'
 
 gem 'mediawiki_api', '~> 0.9.0'
 
@@ -20,3 +20,4 @@ gem 'feedjira'
 gem 'rspec'
 
 
+gem 'i18n'
