@@ -7,6 +7,7 @@ require "rubygems"
 require "bundler/setup"
 require "trilogy"
 require "sequel"
+require "i18n"
 
 require 'parser'
 require 'fetcher'
@@ -16,11 +17,14 @@ require 'daily'
 
 USE_DB = ENV['GOPHERPEDIA_DB_URI'] != nil
 
+I18n.load_path += Dir[File.expand_path("config/locales") + "/*.yml"]
+I18n.default_locale = :en # (note that `en` is already the default!)
+
 port = (ENV['GOPHER_PORT'] || 70).to_i
 host = '0.0.0.0'
 
 puts "HOST #{host} PORT #{port}"
-
+puts "Locales: #{I18n.load_path.inspect}"
 
 #
 # This is a fairly simple wrapper around a DB constant that will check
@@ -53,38 +57,52 @@ set :non_blocking, false
 set :host, host
 set :port, port
 
+LOCALE_MATCH = Regexp.new(/^\/lang=(\w+)/)
+
+before_action do |selector, params|
+  if re = LOCALE_MATCH.match(selector)
+    params['lang'] = re[1]
+    selector = selector.gsub(/#{re[0]}/, '/')
+    I18n.locale = params['lang']
+  else
+    params['lang'] = I18n.locale = I18n.default_locale
+  end
+  return selector, params
+end
+
 #
 # main index for the server
 #
 menu :index do |pagelist, featured|
+  block params['lang']
   figlet "gopherpedia!"
   br
-  block "Welcome to **Gopherpedia**, the gopher interface to Wikipedia. This is a direct interface to wikipedia, you can search and read articles via the search form below. Enjoy!"
+  block I18n.t('index.welcome')
 
   br
-  menu "more about gopherpedia", "/about", 'gopherpedia.com'
+  menu I18n.t('index.more_about'), "/about", 'gopherpedia.com'
 
   # use br(x) to add x space between lines
   br(2)
 
   # ask for some input
-  text "Search gopherpedia:"
-  input 'Search Gopherpedia', '/lookup', 'gopherpedia.com'
+  text I18n.t('index.search_header')
+  input I18n.t('index.search_input'), '/lookup', 'gopherpedia.com'
 
-  header "Featured Content"
+  header I18n.t('index.featured_content')
   featured.reverse.each do |f|
-    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}", 'gopherpedia.com'
+    text_link "#{f[:date].strftime(I18n.t('.date'))}: #{f[:title]}", "/#{f[:title]}", 'gopherpedia.com'
   end
   br(2)
 
-  header "Recent pages"
+  header I18n.t('index.recent_pages')
   pagelist.each do |p|
     text_link p, "/#{p}", 'gopherpedia.com'
   end
   br
 
   br(5)
-  text "Powered by Gopher 2000, a Muffinlabs Production" 
+  text I18n.t('.powered_by')
 end
 
 route '/about' do
@@ -201,13 +219,13 @@ menu :error do |code|
   figlet "Ooops!"
   br
 
-  text "Looks like something went wrong with that request"
+  text I18n.t('error.heading')
   br
   br
   error "Error #{code.to_s}"
   br
   br
-  menu "back to gopherpedia", "/", 'gopherpedia.com'
+  menu I18n.t('.back_to'), "/", 'gopherpedia.com'
 end
 
 text :article do |title, article|
