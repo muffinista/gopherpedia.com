@@ -64,7 +64,7 @@ GEM
     net-http (0.6.0)
       uri
     nio4r (2.7.4)
-    nokogiri (1.18.8-x86_64-linux-gnu)
+    nokogiri (1.18.9-x86_64-linux-gnu)
       racc (~> 1.4)
     pry (0.15.2)
       coderay (~> 1.1)
@@ -103,7 +103,7 @@ DEPENDENCIES
   filecache
   gopher2000!
   mediawiki_api (~> 0.9.0)
-  nokogiri (~> 1.18.8)
+  nokogiri (~> 1.18.9)
   pry
   rspec
   sanitize (~> 7.0.0)
