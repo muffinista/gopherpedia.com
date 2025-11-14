@@ -8,9 +8,9 @@ require "mediawiki_api"
 class Fetcher
   attr_reader :cache
 
-  def initialize
+  def initialize(locale='en')
     @cache = FileCache.new("gopherpedia", "/tmp", 3600*24, 2)
-    @mw = MediawikiApi::Client.new('https://en.wikipedia.org/w/api.php')
+    @mw = MediawikiApi::Client.new("https://#{locale}.wikipedia.org/w/api.php")
   end
 
   def search(key, offset = nil)

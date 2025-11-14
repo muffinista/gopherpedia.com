@@ -12,7 +12,7 @@ gem 'filecache'
 gem 'sanitize', '~> 7.0.0'
 gem 'nokogiri', '~> 1.18.9'
 
-gem 'sequel', '~> 5.90.0'
+gem 'sequel', '~> 5.98.0'
 gem 'trilogy'
 
 gem 'feedjira'

@@ -13,19 +13,19 @@ require 'net/http'
 # http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom
 
 class FeaturedContent
-  FEED_URL = "https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom"
+  #FEED_URL = "https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom"
   
-  def initialize
+  def initialize(locale='en')
     @cache = FileCache.new("gopherpedia", "/tmp", 3600, 2)
-    @key = "featured.atom"
+    @key = "featured.#{locale}.atom"
+    @locale = locale
   end
 
   def fetch(force=false)
     @feed = @cache.get(@key) unless force
     unless @feed
       puts "feed not cached, fetch"
-
-      uri = URI(FEED_URL)
+      uri = URI("https://#{@locale}.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom")
       data = Net::HTTP.get(uri)
       @feed = Feedjira.parse(data)
 
@@ -36,7 +36,6 @@ class FeaturedContent
 
     @feed.entries.each do |entry|
       doc = Nokogiri::HTML(entry.summary)
-#      puts doc.inspect
       doc.xpath("//a").each do |a|
         if a.children.first.name != "img"
           if a.attributes['title']

@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/muffinista/gopher2000
-  revision: aa311f2c15d2a38cb02fbf81e4a11e4b4ebe5c50
+  revision: b668cd5a34e14325e02ab4b8b24a269862410ce0
   branch: main
   specs:
     gopher2000 (0.7.0)
@@ -91,7 +91,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     sax-machine (1.3.2)
-    sequel (5.90.0)
+    sequel (5.98.0)
       bigdecimal
     syslog (0.3.0)
       logger
@@ -111,7 +111,7 @@ DEPENDENCIES
   pry
   rspec
   sanitize (~> 7.0.0)
-  sequel (~> 5.90.0)
+  sequel (~> 5.98.0)
   trilogy
 
 BUNDLED WITH
