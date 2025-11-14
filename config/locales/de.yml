@@ -1,8 +1,7 @@
 ---
-en:
-  name: English
+de:
+  name: German
   index:
-    pick_a_language: Pick a language
     welcome: "Welcome to **Gopherpedia**, the gopher interface to Wikipedia. This is a direct interface to wikipedia, you can search and read articles via the search form below. Enjoy!"
     more_about: "more about gopherpedia"
     search_header: "Search gopherpedia:"
