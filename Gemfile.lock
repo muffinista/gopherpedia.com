@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/muffinista/gopher2000
-  revision: 0691dd0463892a6c3c745e384f5c2ef8522e0147
-  branch: switch-to-nio4r
+  revision: 48e7d7e59fbf3dea278dcac137436dda056313d2
+  branch: main
   specs:
     gopher2000 (0.7.0)
       artii (>= 2.0.1)
@@ -59,18 +59,18 @@ GEM
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
-    multi_json (1.15.0)
+    multi_json (1.18.0)
     multipart-post (2.4.1)
     net-http (0.6.0)
       uri
-    nio4r (2.7.4)
-    nokogiri (1.18.9-x86_64-linux-gnu)
+    nio4r (2.7.5)
+    nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
     racc (1.8.1)
-    rake (13.2.1)
+    rake (13.3.1)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
