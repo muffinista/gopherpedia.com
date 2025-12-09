@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/muffinista/gopher2000
-  revision: 48e7d7e59fbf3dea278dcac137436dda056313d2
+  revision: d9e1a5a6c4ccacc3a433491f85730780c6c90ee0
   branch: main
   specs:
     gopher2000 (0.7.0)
