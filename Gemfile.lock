@@ -93,7 +93,7 @@ GEM
     syslog (0.3.0)
       logger
     trilogy (2.9.0)
-    uri (1.0.3)
+    uri (1.0.4)
 
 PLATFORMS
   x86_64-linux
