@@ -7,20 +7,22 @@ require "rubygems"
 require "bundler/setup"
 require "trilogy"
 require "sequel"
+require "i18n"
 
 require 'parser'
 require 'fetcher'
 require 'daily'
 
-# require 'pry'
-
 USE_DB = ENV['GOPHERPEDIA_DB_URI'] != nil
+
+I18n.load_path += Dir[File.expand_path("config/locales") + "/*.yml"]
+I18n.default_locale = :en # (note that `en` is already the default!)
 
 port = (ENV['GOPHER_PORT'] || 70).to_i
 host = '0.0.0.0'
 
 puts "HOST #{host} PORT #{port}"
-
+puts "Locales: #{I18n.load_path.inspect}"
 
 #
 # This is a fairly simple wrapper around a DB constant that will check
@@ -53,38 +55,64 @@ set :non_blocking, false
 set :host, host
 set :port, port
 
+LOCALE_MATCH = Regexp.new(/^\/lang=(\w+)/)
+
+before_action do |selector, params|
+  puts "***** #{selector}"
+  if re = LOCALE_MATCH.match(selector)
+    params['lang'] = re[1]
+    selector = selector.gsub(/#{re[0]}/, '')
+    selector = "/" if selector.nil? || selector == ""
+    puts "Setting locale to #{params['lang']} #{selector}"
+    I18n.locale = params['lang']
+  else
+    params['lang'] = I18n.locale = I18n.default_locale
+  end
+  return selector, params
+end
+
 #
 # main index for the server
 #
-menu :index do |pagelist, featured|
+menu :index do |pagelist, featured, locale|
+  locale ||= I18n.default_locale
+  prefix = (locale == I18n.default_locale) ? "" : "lang=#{locale}"
   figlet "gopherpedia!"
   br
-  block "Welcome to **Gopherpedia**, the gopher interface to Wikipedia. This is a direct interface to wikipedia, you can search and read articles via the search form below. Enjoy!"
+
+  if I18n.available_locales.count > 1
+    block I18n.t('index.pick_a_language')
+    I18n.available_locales.each do |locale|
+      menu I18n.t(:name, locale:), "/lang=#{locale}"
+    end
+  end
+  
+  block I18n.t('index.welcome')
 
   br
-  menu "more about gopherpedia", "/about", 'gopherpedia.com'
+  menu I18n.t('index.more_about'), "/about", 'gopherpedia.com'
 
   # use br(x) to add x space between lines
   br(2)
 
   # ask for some input
-  text "Search gopherpedia:"
-  input 'Search Gopherpedia', '/lookup', 'gopherpedia.com'
+  text I18n.t('index.search_header')
+  input I18n.t('index.search_input'), "#{prefix}/lookup", 'gopherpedia.com'
 
-  header "Featured Content"
+  header I18n.t('index.featured_content')
   featured.reverse.each do |f|
-    text_link "#{f[:date].strftime('%B %e, %Y')}: #{f[:title]}", "/#{f[:title]}", 'gopherpedia.com'
+    text_link "#{f[:date].strftime(I18n.t('.date'))}: #{f[:title]}", "#{prefix}/#{f[:title]}", 'gopherpedia.com'
   end
   br(2)
 
-  header "Recent pages"
+  header I18n.t('index.recent_pages')
   pagelist.each do |p|
-    text_link p, "/#{p}", 'gopherpedia.com'
+    text_link p, "/#{prefix}/#{p}", 'gopherpedia.com'
   end
   br
 
   br(5)
-  text "Powered by Gopher 2000, a Muffinlabs Production" 
+  text I18n.t('.powered_by')
 end
 
 route '/about' do
@@ -124,14 +152,12 @@ end
 # selector: The path of the request being made
 # ip_address: The remote IP address
 #
-#  location = request.input.strip
-
 route '/lookup' do
   key = request.input.strip
-  f = Fetcher.new
+  f = Fetcher.new(I18n.locale)
   total, results = f.search(key)
 
-  render :search, key, total, results
+  render :search, key, total, results, I18n.locale
 end
 
 #
@@ -139,10 +165,10 @@ end
 #
 route '/*' do
   title = params[:splat].strip
-
+  
   if title && title != '/' && title.length > 0
     begin
-      f = Fetcher.new
+      f = Fetcher.new(I18n.locale)
       data = f.get(title)
       if redirect = data.match(/^#REDIRECT ?\[\[([^\]]+)\]\]/)
         data = f.get(redirect[1])
@@ -152,7 +178,7 @@ route '/*' do
       a = p.parse(data)
     
       if USE_DB && !data.nil? && data != ""
-        DbWrapper.DB[:pages].insert(:title => title)
+        DbWrapper.DB[:pages].insert(title:, locale: I18n.locale.to_s)
       end
     
       render :article, title, a
@@ -166,6 +192,7 @@ route '/*' do
                  DbWrapper.DB[:pages]
                    .select(:title,
                            Sequel.function(:max, :viewed_at).as(:viewed_at))
+                   .where(locale: I18n.locale.to_s)
                    .group_by(:title)
                    .order(Sequel.desc(:viewed_at))
                    .limit(20)
@@ -175,22 +202,24 @@ route '/*' do
                end
 
     # pull featured content
-    f = FeaturedContent.new
+    f = FeaturedContent.new(I18n.locale)
     featured = f.fetch
     
-    render :index, pagelist, featured
+    render :index, pagelist, featured, I18n.locale
   end
 end
 
 #
 # output the results of a search request
 #
-menu :search do |key, total, results|
+menu :search do |key, total, results, locale|
+  prefix = (locale == I18n.default_locale) ? "" : "lang=#{locale}"
+  
   br
   text "** RESULTS FOR #{key} **"
   br
   results.each do |x|
-    text_link x, "/#{x}", 'gopherpedia.com'
+    text_link x, "#{prefix}/#{x}", 'gopherpedia.com'
   end
   br
   text "** Powered by Gopher 2000 **"
@@ -201,13 +230,13 @@ menu :error do |code|
   figlet "Ooops!"
   br
 
-  text "Looks like something went wrong with that request"
+  text I18n.t('error.heading')
   br
   br
   error "Error #{code.to_s}"
   br
   br
-  menu "back to gopherpedia", "/", 'gopherpedia.com'
+  menu I18n.t('.back_to'), "/", 'gopherpedia.com'
 end
 
 text :article do |title, article|
