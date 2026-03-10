@@ -18,8 +18,9 @@ USE_DB = ENV['GOPHERPEDIA_DB_URI'] != nil
 I18n.load_path += Dir[File.expand_path("config/locales") + "/*.yml"]
 I18n.default_locale = :en # (note that `en` is already the default!)
 
-port = (ENV['GOPHER_PORT'] || 70).to_i
-host = '0.0.0.0'
+port = ENV.fetch('GOPHER_PORT', 70).to_i
+host = ENV.fetch('GOPHER_HOST', '0.0.0.0')
+
 
 puts "HOST #{host} PORT #{port}"
 puts "Locales: #{I18n.load_path.inspect}"
@@ -83,7 +84,7 @@ menu :index do |pagelist, featured, locale|
   if I18n.available_locales.count > 1
     block I18n.t('index.pick_a_language')
     I18n.available_locales.each do |locale|
-      menu I18n.t(:name, locale:), "/lang=#{locale}"
+      menu I18n.t(:name, locale:), "/lang=#{locale}", 'gopherpedia.com'
     end
   end
   
