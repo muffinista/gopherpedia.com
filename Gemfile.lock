@@ -45,7 +45,7 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     io-console (0.8.2)
-    json (2.18.1)
+    json (2.19.2)
     little-plugger (1.1.4)
     logger (1.7.0)
     logging (2.4.0)
